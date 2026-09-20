@@ -60,6 +60,8 @@ document.addEventListener(
         setupCityAutocomplete();
 
        setupBusinessAutocomplete();
+       
+       setupCustomSegment();
 
         setupDiagnosticForm();
 
