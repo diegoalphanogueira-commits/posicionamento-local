@@ -3163,7 +3163,7 @@ function redirectToRadar({
 
     region,
 
-    businessQuery,
+    company,
 
     segment,
 
@@ -3177,15 +3177,13 @@ function redirectToRadar({
         );
 
 
-    /*
-        O Radar vai usar estes dados
-        para fazer a busca REAL
-        pelo estabelecimento.
-    */
+    /* =====================================================
+       DADOS PRINCIPAIS
+    ====================================================== */
 
     destination.searchParams.set(
-        "busca",
-        businessQuery
+        "empresa",
+        company
     );
 
 
@@ -3212,6 +3210,10 @@ function redirectToRadar({
         "posicionamento-local"
     );
 
+
+    /* =====================================================
+       CIDADE
+    ====================================================== */
 
     destination.searchParams.set(
         "cidade",
@@ -3249,19 +3251,76 @@ function redirectToRadar({
     }
 
 
-    /*
-        Mantém UTMs.
-    */
+    /* =====================================================
+       ENDEREÇO REAL
+    ====================================================== */
+
+    destination.searchParams.set(
+        "endereco",
+        selectedBusiness.address
+    );
+
+
+    destination.searchParams.set(
+        "lat",
+        selectedBusiness.lat
+    );
+
+
+    destination.searchParams.set(
+        "lon",
+        selectedBusiness.lon
+    );
+
+
+    if (
+        selectedBusiness.placeId
+    ) {
+
+        destination.searchParams.set(
+            "place_id",
+            selectedBusiness.placeId
+        );
+
+    }
+
+
+    if (
+        selectedBusiness.postcode
+    ) {
+
+        destination.searchParams.set(
+            "cep",
+            selectedBusiness.postcode
+        );
+
+    }
+
+
+    if (
+        selectedBusiness.suburb
+    ) {
+
+        destination.searchParams.set(
+            "bairro",
+            selectedBusiness.suburb
+        );
+
+    }
+
+
+    /* =====================================================
+       TRACKING
+    ====================================================== */
 
     copyTrackingParameters(
         destination
     );
 
 
-    /*
-        Salva o contexto antes
-        de sair da página.
-    */
+    /* =====================================================
+       SALVAR CONTEXTO
+    ====================================================== */
 
     try {
 
@@ -3269,17 +3328,17 @@ function redirectToRadar({
             "radarLocalLead",
             JSON.stringify({
 
-                busca:
-                    businessQuery,
+                empresa:
+                    company,
 
                 segmento:
                     segment,
 
-                regiao:
-                    region,
-
                 telefone:
                     phone,
+
+                regiao:
+                    region,
 
                 cidade:
                     selectedCity.name,
@@ -3287,14 +3346,36 @@ function redirectToRadar({
                 estado:
                     selectedCity.stateCode,
 
+                endereco:
+                    selectedBusiness.address,
+
+                bairro:
+                    selectedBusiness.suburb ||
+                    "",
+
+                cep:
+                    selectedBusiness.postcode ||
+                    "",
+
                 lat:
-                    selectedCity.lat,
+                    selectedBusiness.lat,
 
                 lon:
+                    selectedBusiness.lon,
+
+                placeId:
+                    selectedBusiness.placeId ||
+                    "",
+
+                cityLat:
+                    selectedCity.lat,
+
+                cityLon:
                     selectedCity.lon,
 
                 cityPlaceId:
-                    selectedCity.placeId,
+                    selectedCity.placeId ||
+                    "",
 
                 origem:
                     "posicionamento-local",
@@ -3311,12 +3392,16 @@ function redirectToRadar({
     catch (error) {
 
         console.warn(
-            "Não foi possível salvar o contexto local.",
+            "Não foi possível salvar o contexto.",
             error
         );
 
     }
 
+
+    /* =====================================================
+       BOTÃO
+    ====================================================== */
 
     const button =
         document.querySelector(
@@ -3334,12 +3419,16 @@ function redirectToRadar({
 
         button.innerHTML =
             `
-                Buscando sua empresa...
+                Preparando diagnóstico...
                 <span>→</span>
             `;
 
     }
 
+
+    /* =====================================================
+       IR PARA O RADAR
+    ====================================================== */
 
     setTimeout(
         function () {
