@@ -52,7 +52,7 @@ let placesAutocompleteSessionToken = null;
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function () {
+    function () {
 
         setCurrentYear();
 
@@ -64,13 +64,10 @@ document.addEventListener(
 
         setupCityAutocomplete();
 
-        await setupGooglePlaces();
-
         setupDiagnosticForm();
 
     }
 );
-
 
 /* =========================================================
    ANO
