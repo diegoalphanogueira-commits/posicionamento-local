@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ========================= */
 
         var radarUrl =
-            "https://radar.metodoflow.co.br/";
+            "https://radar.metodoflow.com.br/";
 
 
         var params =
