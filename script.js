@@ -1502,10 +1502,6 @@ function setupBusinessAutocomplete() {
 }
 
 
-/* =========================================================
-   BUSCAR EMPRESA / ENDEREÇO NO GEOAPIFY
-========================================================= */
-
 async function searchBusinessesGeoapify(
     query
 ) {
@@ -1543,8 +1539,7 @@ async function searchBusinessesGeoapify(
         businessAbortController
     ) {
 
-        businessAbortController
-            .abort();
+        businessAbortController.abort();
 
     }
 
@@ -1560,59 +1555,150 @@ async function searchBusinessesGeoapify(
 
     try {
 
-        const url =
-            new URL(
-                "https://api.geoapify.com/v1/geocode/autocomplete"
-            );
+        let url;
 
 
         /*
-            Colocamos a cidade dentro
-            do próprio texto da busca.
-        */
+            Se parece endereço:
+            usamos GEOCODING.
 
-        const searchText =
-            [
-                query,
-                selectedCity.name,
-                selectedCity.stateCode,
-                "Brasil"
-            ]
-                .filter(Boolean)
-                .join(", ");
-
-
-        url.searchParams.set(
-            "text",
-            searchText
-        );
-
-
-        url.searchParams.set(
-            "format",
-            "json"
-        );
-
-
-        url.searchParams.set(
-            "filter",
-            "countrycode:br"
-        );
-
-
-        /*
-            Priorizamos resultados perto
-            da cidade selecionada.
+            Ex:
+            Rua X, 123
+            Avenida Y
+            663
         */
 
         if (
-            selectedCity.lat &&
-            selectedCity.lon
+            looksLikeAddress(
+                query
+            )
         ) {
 
+            url =
+                new URL(
+                    "https://api.geoapify.com/v1/geocode/autocomplete"
+                );
+
+
+            const searchText =
+                [
+                    query,
+                    selectedCity.name,
+                    selectedCity.stateCode,
+                    "Brasil"
+                ]
+                    .filter(Boolean)
+                    .join(", ");
+
+
             url.searchParams.set(
-                "bias",
-                `proximity:${selectedCity.lon},${selectedCity.lat}`
+                "text",
+                searchText
+            );
+
+
+            url.searchParams.set(
+                "format",
+                "json"
+            );
+
+
+            url.searchParams.set(
+                "filter",
+                "countrycode:br"
+            );
+
+
+            if (
+                selectedCity.lat &&
+                selectedCity.lon
+            ) {
+
+                url.searchParams.set(
+                    "bias",
+                    `proximity:${selectedCity.lon},${selectedCity.lat}`
+                );
+
+            }
+
+        }
+
+
+        /*
+            Se parece nome de empresa:
+            usamos PLACES API.
+        */
+
+        else {
+
+            url =
+                new URL(
+                    "https://api.geoapify.com/v2/places"
+                );
+
+
+            /*
+                Categorias amplas para
+                pegar empresas, lojas,
+                escritórios e serviços.
+            */
+
+            url.searchParams.set(
+                "categories",
+                [
+                    "office",
+                    "service",
+                    "commercial",
+                    "healthcare",
+                    "catering",
+                    "accommodation",
+                    "education",
+                    "childcare",
+                    "entertainment",
+                    "leisure",
+                    "tourism",
+                    "activity"
+                ].join(",")
+            );
+
+
+            /*
+                Nome digitado pelo usuário.
+            */
+
+            url.searchParams.set(
+                "name",
+                query
+            );
+
+
+            /*
+                Restringimos a busca
+                à região da cidade.
+            */
+
+            if (
+                selectedCity.lat &&
+                selectedCity.lon
+            ) {
+
+                url.searchParams.set(
+                    "filter",
+                    `circle:${selectedCity.lon},${selectedCity.lat},30000`
+                );
+
+
+                url.searchParams.set(
+                    "bias",
+                    `proximity:${selectedCity.lon},${selectedCity.lat}`
+                );
+
+            }
+
+
+            url.searchParams.set(
+                "limit",
+                "10"
             );
 
         }
@@ -1621,12 +1707,6 @@ async function searchBusinessesGeoapify(
         url.searchParams.set(
             "lang",
             "pt"
-        );
-
-
-        url.searchParams.set(
-            "limit",
-            "8"
         );
 
 
@@ -1667,22 +1747,11 @@ async function searchBusinessesGeoapify(
 
 
         /*
-            Suporte aos dois formatos
-            possíveis do Geoapify.
+            PLACES API
+            normalmente retorna features[].
         */
 
         if (
-            Array.isArray(
-                payload.results
-            )
-        ) {
-
-            results =
-                payload.results;
-
-        }
-
-        else if (
             Array.isArray(
                 payload.features
             )
@@ -1725,24 +1794,20 @@ async function searchBusinessesGeoapify(
 
 
         /*
-            Coloca estabelecimentos
-            e locais nomeados primeiro.
+            GEOCODING com format=json
+            pode retornar results[].
         */
 
-        results =
-            results.sort(
-                function (
-                    a,
-                    b
-                ) {
+        else if (
+            Array.isArray(
+                payload.results
+            )
+        ) {
 
-                    return (
-                        getBusinessResultScore(b) -
-                        getBusinessResultScore(a)
-                    );
+            results =
+                payload.results;
 
-                }
-            );
+        }
 
 
         console.log(
@@ -1791,6 +1856,64 @@ async function searchBusinessesGeoapify(
         );
 
     }
+
+}
+
+
+/* =========================================================
+   IDENTIFICAR SE O TEXTO PARECE ENDEREÇO
+========================================================= */
+
+function looksLikeAddress(
+    query
+) {
+
+    const text =
+        normalizeText(
+            query
+        );
+
+
+    /*
+        Número costuma indicar endereço.
+    */
+
+    if (
+        /\d/.test(
+            text
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    const addressWords = [
+
+        "rua ",
+        "r ",
+        "avenida ",
+        "av ",
+        "travessa ",
+        "alameda ",
+        "estrada ",
+        "rodovia ",
+        "praca ",
+        "logradouro "
+
+    ];
+
+
+    return addressWords.some(
+        function (word) {
+
+            return text.startsWith(
+                word
+            );
+
+        }
+    );
 
 }
 
