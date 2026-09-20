@@ -1,7 +1,7 @@
 /* =========================================================
    POSICIONAMENTO LOCAL
    LANDING → RADAR LOCAL
-   Busca inteligente com Geoapify
+   V2
 ========================================================= */
 
 
@@ -10,30 +10,26 @@
 ========================================================= */
 
 const GEOAPIFY_API_KEY =
-    "61752d18dba9485784b870f8d4e38b17";
+    "COLE_SUA_CHAVE_AQUI";
 
 
 const RADAR_LOCAL_URL =
     "https://diegoalphanogueira-commits.github.io/radar-local/";
 
 
-const AUTOCOMPLETE_DELAY =
-    450;
-
-
-const MIN_SEARCH_LENGTH =
-    3;
+const CITY_SEARCH_DELAY =
+    350;
 
 
 /* =========================================================
    ESTADO
 ========================================================= */
 
-let placeSearchTimer = null;
+let citySearchTimer = null;
 
-let placeAbortController = null;
+let cityAbortController = null;
 
-let selectedPlace = null;
+let selectedCity = null;
 
 
 /* =========================================================
@@ -48,13 +44,13 @@ document.addEventListener(
 
         setupMobileMenu();
 
+        setupSmoothMenuClose();
+
         setupPhoneMask();
 
-        setupPlaceAutocomplete();
+        setupCityAutocomplete();
 
         setupDiagnosticForm();
-
-        setupSmoothMenuClose();
 
     }
 );
@@ -89,21 +85,21 @@ function setCurrentYear() {
 
 function setupMobileMenu() {
 
-    const menuButton =
+    const button =
         document.getElementById(
             "menuToggle"
         );
 
 
-    const mobileMenu =
+    const menu =
         document.getElementById(
             "mobileMenu"
         );
 
 
     if (
-        !menuButton ||
-        !mobileMenu
+        !button ||
+        !menu
     ) {
 
         return;
@@ -111,25 +107,25 @@ function setupMobileMenu() {
     }
 
 
-    menuButton.addEventListener(
+    button.addEventListener(
         "click",
         function () {
 
             const opened =
-                mobileMenu.classList
-                    .toggle(
-                        "active"
-                    );
+                menu.classList.toggle(
+                    "active"
+                );
 
 
-            document.body.classList
+            document.body
+                .classList
                 .toggle(
                     "menu-open",
                     opened
                 );
 
 
-            menuButton.setAttribute(
+            button.setAttribute(
                 "aria-expanded",
                 opened
                     ? "true"
@@ -143,26 +139,26 @@ function setupMobileMenu() {
 
 
 /* =========================================================
-   FECHAR MENU AO CLICAR
+   FECHAR MENU
 ========================================================= */
 
 function setupSmoothMenuClose() {
 
-    const mobileMenu =
-        document.getElementById(
-            "mobileMenu"
-        );
-
-
-    const menuButton =
+    const button =
         document.getElementById(
             "menuToggle"
         );
 
 
+    const menu =
+        document.getElementById(
+            "mobileMenu"
+        );
+
+
     if (
-        !mobileMenu ||
-        !menuButton
+        !button ||
+        !menu
     ) {
 
         return;
@@ -170,7 +166,7 @@ function setupSmoothMenuClose() {
     }
 
 
-    mobileMenu
+    menu
         .querySelectorAll("a")
         .forEach(
             function (link) {
@@ -179,11 +175,9 @@ function setupSmoothMenuClose() {
                     "click",
                     function () {
 
-                        mobileMenu
-                            .classList
-                            .remove(
-                                "active"
-                            );
+                        menu.classList.remove(
+                            "active"
+                        );
 
 
                         document.body
@@ -193,11 +187,10 @@ function setupSmoothMenuClose() {
                             );
 
 
-                        menuButton
-                            .setAttribute(
-                                "aria-expanded",
-                                "false"
-                            );
+                        button.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
 
                     }
                 );
@@ -209,29 +202,28 @@ function setupSmoothMenuClose() {
 
 
 /* =========================================================
-   MÁSCARA DO WHATSAPP
+   WHATSAPP
 ========================================================= */
 
 function setupPhoneMask() {
 
-    const phoneInput =
+    const input =
         document.getElementById(
             "phone"
         );
 
 
-    if (!phoneInput) {
+    if (!input) {
         return;
     }
 
 
-    phoneInput.addEventListener(
+    input.addEventListener(
         "input",
         function () {
 
             let value =
-                phoneInput
-                    .value
+                input.value
                     .replace(
                         /\D/g,
                         ""
@@ -243,11 +235,10 @@ function setupPhoneMask() {
 
 
             if (
-                value.length >
-                10
+                value.length > 10
             ) {
 
-                phoneInput.value =
+                input.value =
                     "(" +
                     value.substring(
                         0,
@@ -264,18 +255,16 @@ function setupPhoneMask() {
                         11
                     );
 
-
                 return;
 
             }
 
 
             if (
-                value.length >
-                6
+                value.length > 6
             ) {
 
-                phoneInput.value =
+                input.value =
                     "(" +
                     value.substring(
                         0,
@@ -292,18 +281,16 @@ function setupPhoneMask() {
                         10
                     );
 
-
                 return;
 
             }
 
 
             if (
-                value.length >
-                2
+                value.length > 2
             ) {
 
-                phoneInput.value =
+                input.value =
                     "(" +
                     value.substring(
                         0,
@@ -312,28 +299,25 @@ function setupPhoneMask() {
                     ") " +
                     value.substring(2);
 
-
                 return;
 
             }
 
 
             if (
-                value.length >
-                0
+                value.length > 0
             ) {
 
-                phoneInput.value =
+                input.value =
                     "(" +
                     value;
-
 
                 return;
 
             }
 
 
-            phoneInput.value = "";
+            input.value = "";
 
         }
     );
@@ -342,31 +326,25 @@ function setupPhoneMask() {
 
 
 /* =========================================================
-   AUTOCOMPLETE GEOAPIFY
+   AUTOCOMPLETE DA CIDADE
 ========================================================= */
 
-function setupPlaceAutocomplete() {
+function setupCityAutocomplete() {
 
-    const searchInput =
+    const input =
         document.getElementById(
-            "placeSearch"
+            "region"
         );
 
 
     const suggestions =
         document.getElementById(
-            "placeSuggestions"
-        );
-
-
-    const changeButton =
-        document.getElementById(
-            "changePlaceButton"
+            "regionSuggestions"
         );
 
 
     if (
-        !searchInput ||
+        !input ||
         !suggestions
     ) {
 
@@ -375,44 +353,39 @@ function setupPlaceAutocomplete() {
     }
 
 
-    searchInput.addEventListener(
+    input.addEventListener(
         "input",
         function () {
 
             const query =
-                searchInput
-                    .value
+                input.value
                     .trim();
 
 
             /*
-                Se a pessoa alterar
-                depois de selecionar,
-                removemos a seleção.
+                Se começar a editar novamente,
+                desfaz a cidade selecionada.
             */
 
-            if (selectedPlace) {
+            selectedCity =
+                null;
 
-                clearSelectedPlace(
-                    false
-                );
 
-            }
+            clearCityHiddenFields();
 
 
             clearTimeout(
-                placeSearchTimer
+                citySearchTimer
             );
 
 
             if (
-                query.length <
-                MIN_SEARCH_LENGTH
+                query.length < 2
             ) {
 
-                hideSuggestions();
+                hideCitySuggestions();
 
-                setPlaceLoading(
+                setCityLoading(
                     false
                 );
 
@@ -421,54 +394,29 @@ function setupPlaceAutocomplete() {
             }
 
 
-            placeSearchTimer =
+            citySearchTimer =
                 setTimeout(
                     function () {
 
-                        searchPlaces(
+                        searchCities(
                             query
                         );
 
                     },
-                    AUTOCOMPLETE_DELAY
+                    CITY_SEARCH_DELAY
                 );
 
         }
     );
 
 
-    if (changeButton) {
-
-        changeButton
-            .addEventListener(
-                "click",
-                function () {
-
-                    clearSelectedPlace(
-                        true
-                    );
-
-
-                    searchInput.focus();
-
-                }
-            );
-
-    }
-
-
-    /*
-        Fecha ao clicar
-        fora da busca.
-    */
-
     document.addEventListener(
         "click",
         function (event) {
 
             const field =
-                searchInput.closest(
-                    ".place-search-field"
+                input.closest(
+                    ".region-search-field"
                 );
 
 
@@ -479,7 +427,7 @@ function setupPlaceAutocomplete() {
                 )
             ) {
 
-                hideSuggestions();
+                hideCitySuggestions();
 
             }
 
@@ -490,27 +438,12 @@ function setupPlaceAutocomplete() {
 
 
 /* =========================================================
-   BUSCAR LOCAIS
+   BUSCAR CIDADES NO GEOAPIFY
 ========================================================= */
 
-async function searchPlaces(
+async function searchCities(
     query
 ) {
-
-    const suggestions =
-        document.getElementById(
-            "placeSuggestions"
-        );
-
-
-    if (
-        !suggestions
-    ) {
-
-        return;
-
-    }
-
 
     if (
         !GEOAPIFY_API_KEY ||
@@ -519,12 +452,8 @@ async function searchPlaces(
         )
     ) {
 
-        console.error(
-            "Configure sua chave do Geoapify em GEOAPIFY_API_KEY."
-        );
-
-        renderSearchMessage(
-            "Busca ainda não configurada."
+        renderCityMessage(
+            "Configure a chave do Geoapify."
         );
 
         return;
@@ -532,67 +461,20 @@ async function searchPlaces(
     }
 
 
-    /*
-        Primeiro pegamos a cidade/região
-        informada no formulário.
-    */
-
-    const regionInput =
-        document.getElementById(
-            "region"
-        );
-
-
-    const region =
-        regionInput
-            ?.value
-            .trim() ||
-        "";
-
-
-    /*
-        Se não houver cidade/região,
-        não fazemos busca nacional.
-        Pedimos primeiro a localização.
-    */
-
     if (
-        !region
+        cityAbortController
     ) {
 
-        renderSearchMessage(
-            "Informe primeiro sua cidade ou região para encontrarmos resultados próximos."
-        );
-
-        setPlaceLoading(
-            false
-        );
-
-        return;
+        cityAbortController.abort();
 
     }
 
 
-    /*
-        Cancela uma busca anterior
-        caso a pessoa continue digitando.
-    */
-
-    if (
-        placeAbortController
-    ) {
-
-        placeAbortController
-            .abort();
-
-    }
-
-
-    placeAbortController =
+    cityAbortController =
         new AbortController();
 
 
-    setPlaceLoading(
+    setCityLoading(
         true
     );
 
@@ -605,39 +487,36 @@ async function searchPlaces(
             );
 
 
-        /*
-            A cidade/região entra como
-            contexto da pesquisa.
-
-            Exemplo:
-
-            Rua Waldemar..., Guarulhos - SP, Brasil
-        */
-
-        const searchText =
-            `${query}, ${region}, Brasil`;
-
-
         url.searchParams.set(
             "text",
-            searchText
+            query
+        );
+
+
+        /*
+            Queremos especificamente
+            cidades.
+        */
+
+        url.searchParams.set(
+            "type",
+            "city"
+        );
+
+
+        /*
+            Somente Brasil.
+        */
+
+        url.searchParams.set(
+            "filter",
+            "countrycode:br"
         );
 
 
         url.searchParams.set(
             "format",
             "json"
-        );
-
-
-        /*
-            Mantém resultados somente
-            dentro do Brasil.
-        */
-
-        url.searchParams.set(
-            "filter",
-            "countrycode:br"
         );
 
 
@@ -659,18 +538,12 @@ async function searchPlaces(
         );
 
 
-        console.log(
-            "Buscando local:",
-            searchText
-        );
-
-
         const response =
             await fetch(
                 url.toString(),
                 {
                     signal:
-                        placeAbortController
+                        cityAbortController
                             .signal
                 }
             );
@@ -681,7 +554,7 @@ async function searchPlaces(
         ) {
 
             throw new Error(
-                "Geoapify respondeu com status " +
+                "Erro Geoapify: " +
                 response.status
             );
 
@@ -692,125 +565,16 @@ async function searchPlaces(
             await response.json();
 
 
-        /*
-            Quando format=json,
-            normalmente temos results[].
-
-            Mantemos compatibilidade
-            também com GeoJSON/features.
-        */
-
-        let results = [];
-
-
-        if (
+        const results =
             Array.isArray(
                 payload.results
             )
-        ) {
-
-            results =
-                payload.results;
-
-        }
-
-        else if (
-            Array.isArray(
-                payload.features
-            )
-        ) {
-
-            results =
-                payload.features.map(
-                    function (feature) {
-
-                        return (
-                            feature.properties ||
-                            {}
-                        );
-
-                    }
-                );
-
-        }
+                ? payload.results
+                : [];
 
 
-        /*
-            Priorizamos resultados
-            relacionados à cidade digitada.
-        */
-
-        const normalizedRegion =
-            normalizeSearchText(
-                region
-            );
-
-
-        const sortedResults =
-            [...results]
-                .sort(
-                    function (
-                        a,
-                        b
-                    ) {
-
-                        const aText =
-                            normalizeSearchText(
-                                [
-                                    a.city,
-                                    a.town,
-                                    a.village,
-                                    a.county,
-                                    a.state,
-                                    a.formatted
-                                ]
-                                    .filter(Boolean)
-                                    .join(" ")
-                            );
-
-
-                        const bText =
-                            normalizeSearchText(
-                                [
-                                    b.city,
-                                    b.town,
-                                    b.village,
-                                    b.county,
-                                    b.state,
-                                    b.formatted
-                                ]
-                                    .filter(Boolean)
-                                    .join(" ")
-                            );
-
-
-                        const aMatches =
-                            aText.includes(
-                                normalizedRegion
-                            )
-                                ? 1
-                                : 0;
-
-
-                        const bMatches =
-                            bText.includes(
-                                normalizedRegion
-                            )
-                                ? 1
-                                : 0;
-
-
-                        return (
-                            bMatches -
-                            aMatches
-                        );
-
-                    }
-                );
-
-
-        renderPlaceSuggestions(
-            sortedResults
+        renderCitySuggestions(
+            results
         );
 
     }
@@ -828,20 +592,20 @@ async function searchPlaces(
 
 
         console.error(
-            "Erro no autocomplete:",
+            "Erro ao buscar cidade:",
             error
         );
 
 
-        renderSearchMessage(
-            "Não foi possível buscar agora. Você ainda pode preencher os dados abaixo manualmente."
+        renderCityMessage(
+            "Não foi possível localizar a cidade agora."
         );
 
     }
 
     finally {
 
-        setPlaceLoading(
+        setCityLoading(
             false
         );
 
@@ -851,52 +615,25 @@ async function searchPlaces(
 
 
 /* =========================================================
-   NORMALIZAR TEXTO PARA COMPARAÇÃO
+   RENDERIZAR CIDADES
 ========================================================= */
 
-function normalizeSearchText(
-    value
-) {
-
-    return String(
-        value || ""
-    )
-        .normalize(
-            "NFD"
-        )
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
-        )
-        .toLowerCase()
-        .trim();
-
-}
-
-/* =========================================================
-   RENDERIZAR SUGESTÕES
-========================================================= */
-
-function renderPlaceSuggestions(
+function renderCitySuggestions(
     results
 ) {
 
-    const suggestions =
+    const container =
         document.getElementById(
-            "placeSuggestions"
+            "regionSuggestions"
         );
 
 
-    if (
-        !suggestions
-    ) {
-
+    if (!container) {
         return;
-
     }
 
 
-    suggestions.innerHTML =
+    container.innerHTML =
         "";
 
 
@@ -904,8 +641,8 @@ function renderPlaceSuggestions(
         !results.length
     ) {
 
-        renderSearchMessage(
-            "Nenhum local encontrado. Tente o endereço completo ou continue preenchendo manualmente."
+        renderCityMessage(
+            "Nenhuma cidade encontrada."
         );
 
         return;
@@ -915,6 +652,27 @@ function renderPlaceSuggestions(
 
     results.forEach(
         function (place) {
+
+            const city =
+                place.city ||
+                place.name ||
+                place.town ||
+                place.village ||
+                "";
+
+
+            if (!city) {
+                return;
+            }
+
+
+            const stateCode =
+                getBrazilStateCode(
+                    place.state_code ||
+                    place.state ||
+                    ""
+                );
+
 
             const button =
                 document.createElement(
@@ -961,21 +719,24 @@ function renderPlaceSuggestions(
 
 
             title.textContent =
-                getPlaceTitle(
-                    place
-                );
+                stateCode
+                    ? `${city} - ${stateCode}`
+                    : city;
 
 
-            const address =
+            const subtitle =
                 document.createElement(
                     "span"
                 );
 
 
-            address.textContent =
-                getPlaceAddress(
-                    place
-                );
+            subtitle.textContent =
+                [
+                    place.state,
+                    "Brasil"
+                ]
+                    .filter(Boolean)
+                    .join(", ");
 
 
             copy.appendChild(
@@ -984,7 +745,7 @@ function renderPlaceSuggestions(
 
 
             copy.appendChild(
-                address
+                subtitle
             );
 
 
@@ -1002,7 +763,7 @@ function renderPlaceSuggestions(
                 "click",
                 function () {
 
-                    selectPlace(
+                    selectCity(
                         place
                     );
 
@@ -1010,7 +771,7 @@ function renderPlaceSuggestions(
             );
 
 
-            suggestions.appendChild(
+            container.appendChild(
                 button
             );
 
@@ -1018,170 +779,59 @@ function renderPlaceSuggestions(
     );
 
 
-    suggestions
-        .classList
-        .remove(
-            "hidden"
-        );
-
-}
-
-
-/* =========================================================
-   TEXTO DO RESULTADO
-========================================================= */
-
-function getPlaceTitle(
-    place
-) {
-
-    return (
-        place.name ||
-        place.address_line1 ||
-        place.street ||
-        place.city ||
-        place.formatted ||
-        "Local encontrado"
-    );
-
-}
-
-
-function getPlaceAddress(
-    place
-) {
-
-    return (
-        place.formatted ||
-        [
-            place.address_line1,
-            place.address_line2
-        ]
-            .filter(Boolean)
-            .join(", ") ||
-        "Endereço identificado"
+    container.classList.remove(
+        "hidden"
     );
 
 }
 
 
 /* =========================================================
-   SELECIONAR LOCAL
+   SELECIONAR CIDADE
 ========================================================= */
 
-function selectPlace(
+function selectCity(
     place
 ) {
 
-    const searchInput =
-        document.getElementById(
-            "placeSearch"
-        );
-
-
-    const companyInput =
-        document.getElementById(
-            "company"
-        );
-
-
-    const regionInput =
+    const input =
         document.getElementById(
             "region"
         );
 
 
-    const selectedCard =
-        document.getElementById(
-            "selectedPlaceCard"
-        );
-
-
-    const selectedName =
-        document.getElementById(
-            "selectedPlaceName"
-        );
-
-
-    const selectedAddress =
-        document.getElementById(
-            "selectedPlaceAddress"
-        );
-
-
-    const formattedAddress =
-        getPlaceAddress(
-            place
-        );
-
-
     const city =
         place.city ||
+        place.name ||
         place.town ||
         place.village ||
-        place.county ||
         "";
 
 
-    const state =
-        place.state_code ||
-        place.state ||
-        "";
-
-
-    const regionText =
-        [
-            city,
-            state
-        ]
-            .filter(Boolean)
-            .join(" - ");
-
-
-    /*
-        Alguns resultados são apenas
-        rua/cidade.
-
-        Só usamos o name como empresa
-        quando parece ser um local real.
-    */
-
-    const nonBusinessTypes = [
-        "street",
-        "city",
-        "suburb",
-        "district",
-        "postcode",
-        "state",
-        "country"
-    ];
-
-
-    const hasBusinessName =
-        Boolean(
-            place.name
-        ) &&
-        !nonBusinessTypes.includes(
-            place.result_type
+    const stateCode =
+        getBrazilStateCode(
+            place.state_code ||
+            place.state ||
+            ""
         );
 
 
-    selectedPlace = {
+    const formatted =
+        stateCode
+            ? `${city} - ${stateCode}`
+            : city;
+
+
+    selectedCity = {
 
         name:
-            place.name ||
+            city,
+
+        state:
+            place.state ||
             "",
 
-        address:
-            formattedAddress,
-
-        city,
-
-        state,
-
-        postcode:
-            place.postcode ||
-            "",
+        stateCode,
 
         lat:
             place.lat ??
@@ -1193,294 +843,245 @@ function selectPlace(
 
         placeId:
             place.place_id ||
-            "",
-
-        resultType:
-            place.result_type ||
             ""
 
     };
 
 
-    /*
-        Campo visual de busca
-    */
-
     if (
-        searchInput
+        input
     ) {
 
-        searchInput.value =
-            hasBusinessName
-
-                ? place.name
-
-                : (
-                    place.address_line1 ||
-                    formattedAddress
-                );
+        input.value =
+            formatted;
 
     }
-
-
-    /*
-        Preenche nome da empresa
-        se o Geoapify identificou
-        um estabelecimento.
-    */
-
-    if (
-        companyInput &&
-        hasBusinessName
-    ) {
-
-        companyInput.value =
-            place.name;
-
-    }
-
-
-    /*
-        Preenche cidade/região.
-    */
-
-    if (
-        regionInput &&
-        regionText
-    ) {
-
-        regionInput.value =
-            regionText;
-
-    }
-
-
-    /*
-        Hidden fields
-    */
-
-    setInputValue(
-        "placeAddress",
-        formattedAddress
-    );
 
 
     setInputValue(
-        "placeCity",
+        "cityName",
         city
     );
 
 
     setInputValue(
-        "placeState",
-        state
+        "cityState",
+        stateCode
     );
 
 
     setInputValue(
-        "placePostcode",
-        place.postcode ||
-        ""
-    );
-
-
-    setInputValue(
-        "placeLat",
+        "cityLat",
         place.lat ??
         ""
     );
 
 
     setInputValue(
-        "placeLon",
+        "cityLon",
         place.lon ??
         ""
     );
 
 
     setInputValue(
-        "placeId",
+        "cityPlaceId",
         place.place_id ||
         ""
     );
 
 
-    /*
-        Card de confirmação
-    */
-
-    if (
-        selectedName
-    ) {
-
-        selectedName.textContent =
-            hasBusinessName
-                ? place.name
-                : (
-                    companyInput?.value ||
-                    "Local selecionado"
-                );
-
-    }
-
-
-    if (
-        selectedAddress
-    ) {
-
-        selectedAddress.textContent =
-            formattedAddress;
-
-    }
-
-
-    if (
-        selectedCard
-    ) {
-
-        selectedCard
-            .classList
-            .remove(
-                "hidden"
-            );
-
-    }
-
-
-    hideSuggestions();
+    hideCitySuggestions();
 
 }
 
 
 /* =========================================================
-   LIMPAR LOCAL
+   UF
 ========================================================= */
 
-function clearSelectedPlace(
-    clearSearchInput
-) {
-
-    selectedPlace =
-        null;
-
-
-    const selectedCard =
-        document.getElementById(
-            "selectedPlaceCard"
-        );
-
-
-    if (
-        selectedCard
-    ) {
-
-        selectedCard
-            .classList
-            .add(
-                "hidden"
-            );
-
-    }
-
-
-    [
-        "placeAddress",
-        "placeCity",
-        "placeState",
-        "placePostcode",
-        "placeLat",
-        "placeLon",
-        "placeId"
-    ]
-        .forEach(
-            function (id) {
-
-                setInputValue(
-                    id,
-                    ""
-                );
-
-            }
-        );
-
-
-    if (
-        clearSearchInput
-    ) {
-
-        const input =
-            document.getElementById(
-                "placeSearch"
-            );
-
-
-        if (input) {
-
-            input.value =
-                "";
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   HELPERS DA BUSCA
-========================================================= */
-
-function setInputValue(
-    id,
+function getBrazilStateCode(
     value
 ) {
 
-    const input =
-        document.getElementById(
-            id
+    const raw =
+        String(
+            value ||
+            ""
+        )
+            .trim();
+
+
+    if (
+        /^[A-Za-z]{2}$/.test(
+            raw
+        )
+    ) {
+
+        return raw.toUpperCase();
+
+    }
+
+
+    const normalized =
+        normalizeText(
+            raw
         );
 
 
-    if (input) {
+    const states = {
 
-        input.value =
-            value;
+        "acre":
+            "AC",
 
-    }
+        "alagoas":
+            "AL",
+
+        "amapa":
+            "AP",
+
+        "amazonas":
+            "AM",
+
+        "bahia":
+            "BA",
+
+        "ceara":
+            "CE",
+
+        "distrito federal":
+            "DF",
+
+        "espirito santo":
+            "ES",
+
+        "goias":
+            "GO",
+
+        "maranhao":
+            "MA",
+
+        "mato grosso":
+            "MT",
+
+        "mato grosso do sul":
+            "MS",
+
+        "minas gerais":
+            "MG",
+
+        "para":
+            "PA",
+
+        "paraiba":
+            "PB",
+
+        "parana":
+            "PR",
+
+        "pernambuco":
+            "PE",
+
+        "piaui":
+            "PI",
+
+        "rio de janeiro":
+            "RJ",
+
+        "rio grande do norte":
+            "RN",
+
+        "rio grande do sul":
+            "RS",
+
+        "rondonia":
+            "RO",
+
+        "roraima":
+            "RR",
+
+        "santa catarina":
+            "SC",
+
+        "sao paulo":
+            "SP",
+
+        "sergipe":
+            "SE",
+
+        "tocantins":
+            "TO"
+
+    };
+
+
+    return (
+        states[
+            normalized
+        ] ||
+        ""
+    );
 
 }
 
 
-function hideSuggestions() {
+/* =========================================================
+   NORMALIZAR TEXTO
+========================================================= */
 
-    const suggestions =
+function normalizeText(
+    value
+) {
+
+    return String(
+        value ||
+        ""
+    )
+        .normalize(
+            "NFD"
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .trim();
+
+}
+
+
+/* =========================================================
+   HELPERS DA CIDADE
+========================================================= */
+
+function hideCitySuggestions() {
+
+    const container =
         document.getElementById(
-            "placeSuggestions"
+            "regionSuggestions"
         );
 
 
     if (
-        suggestions
+        container
     ) {
 
-        suggestions
-            .classList
-            .add(
-                "hidden"
-            );
+        container.classList.add(
+            "hidden"
+        );
 
     }
 
 }
 
 
-function setPlaceLoading(
+function setCityLoading(
     loading
 ) {
 
     const loader =
         document.getElementById(
-            "placeSearchLoader"
+            "regionSearchLoader"
         );
 
 
@@ -1497,26 +1098,22 @@ function setPlaceLoading(
 }
 
 
-function renderSearchMessage(
+function renderCityMessage(
     message
 ) {
 
-    const suggestions =
+    const container =
         document.getElementById(
-            "placeSuggestions"
+            "regionSuggestions"
         );
 
 
-    if (
-        !suggestions
-    ) {
-
+    if (!container) {
         return;
-
     }
 
 
-    suggestions.innerHTML =
+    container.innerHTML =
         "";
 
 
@@ -1534,10 +1131,6 @@ function renderSearchMessage(
         ".72rem";
 
 
-    item.style.lineHeight =
-        "1.5";
-
-
     item.style.color =
         "#7d8898";
 
@@ -1546,24 +1139,69 @@ function renderSearchMessage(
         message;
 
 
-    suggestions.appendChild(
+    container.appendChild(
         item
     );
 
 
-    suggestions.classList
-        .remove(
-            "hidden"
+    container.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+function clearCityHiddenFields() {
+
+    [
+        "cityName",
+        "cityState",
+        "cityLat",
+        "cityLon",
+        "cityPlaceId"
+    ]
+        .forEach(
+            function (id) {
+
+                setInputValue(
+                    id,
+                    ""
+                );
+
+            }
         );
 
 }
 
 
+function setInputValue(
+    id,
+    value
+) {
+
+    const input =
+        document.getElementById(
+            id
+        );
+
+
+    if (
+        input
+    ) {
+
+        input.value =
+            value;
+
+    }
+
+}
+
+
 /* =========================================================
-   ERROS DO FORMULÁRIO
+   ERROS
 ========================================================= */
 
-function clearFormErrors() {
+function clearErrors() {
 
     document
         .querySelectorAll(
@@ -1572,10 +1210,9 @@ function clearFormErrors() {
         .forEach(
             function (element) {
 
-                element.classList
-                    .remove(
-                        "input-error"
-                    );
+                element.classList.remove(
+                    "input-error"
+                );
 
             }
         );
@@ -1596,7 +1233,7 @@ function clearFormErrors() {
 }
 
 
-function showFieldError(
+function showError(
     input,
     message
 ) {
@@ -1625,7 +1262,7 @@ function showFieldError(
         message;
 
 
-    const container =
+    const parent =
         input.closest(
             ".field"
         ) ||
@@ -1633,10 +1270,10 @@ function showFieldError(
 
 
     if (
-        container
+        parent
     ) {
 
-        container.appendChild(
+        parent.appendChild(
             error
         );
 
@@ -1646,7 +1283,7 @@ function showFieldError(
 
 
 /* =========================================================
-   FORMULÁRIO PRINCIPAL
+   FORMULÁRIO
 ========================================================= */
 
 function setupDiagnosticForm() {
@@ -1660,7 +1297,7 @@ function setupDiagnosticForm() {
     if (!form) {
 
         console.error(
-            "Formulário diagnosticForm não encontrado."
+            "diagnosticForm não encontrado."
         );
 
         return;
@@ -1675,12 +1312,18 @@ function setupDiagnosticForm() {
             event.preventDefault();
 
 
-            clearFormErrors();
+            clearErrors();
 
 
-            const companyInput =
+            const regionInput =
                 document.getElementById(
-                    "company"
+                    "region"
+                );
+
+
+            const businessInput =
+                document.getElementById(
+                    "businessQuery"
                 );
 
 
@@ -1690,20 +1333,21 @@ function setupDiagnosticForm() {
                 );
 
 
-            const regionInput =
-                document.getElementById(
-                    "region"
-                );
-
-
             const phoneInput =
                 document.getElementById(
                     "phone"
                 );
 
 
-            const company =
-                companyInput
+            const region =
+                regionInput
+                    ?.value
+                    .trim() ||
+                "";
+
+
+            const businessQuery =
+                businessInput
                     ?.value
                     .trim() ||
                 "";
@@ -1711,13 +1355,6 @@ function setupDiagnosticForm() {
 
             const segment =
                 segmentInput
-                    ?.value
-                    .trim() ||
-                "";
-
-
-            const region =
-                regionInput
                     ?.value
                     .trim() ||
                 "";
@@ -1739,13 +1376,36 @@ function setupDiagnosticForm() {
                 true;
 
 
+            /*
+                Obrigamos o usuário
+                a selecionar uma cidade
+                real do autocomplete.
+            */
+
             if (
-                !company
+                !selectedCity ||
+                !selectedCity.lat ||
+                !selectedCity.lon
             ) {
 
-                showFieldError(
-                    companyInput,
-                    "Informe o nome da empresa."
+                showError(
+                    regionInput,
+                    "Selecione sua cidade nas sugestões."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !businessQuery
+            ) {
+
+                showError(
+                    businessInput,
+                    "Informe o nome da empresa ou endereço."
                 );
 
                 valid =
@@ -1758,9 +1418,9 @@ function setupDiagnosticForm() {
                 !segment
             ) {
 
-                showFieldError(
+                showError(
                     segmentInput,
-                    "Selecione o segmento."
+                    "Informe o segmento."
                 );
 
                 valid =
@@ -1770,26 +1430,10 @@ function setupDiagnosticForm() {
 
 
             if (
-                !region
+                phone.length < 10
             ) {
 
-                showFieldError(
-                    regionInput,
-                    "Informe sua cidade ou região."
-                );
-
-                valid =
-                    false;
-
-            }
-
-
-            if (
-                phone.length <
-                10
-            ) {
-
-                showFieldError(
+                showError(
                     phoneInput,
                     "Informe um WhatsApp válido."
                 );
@@ -1804,13 +1448,10 @@ function setupDiagnosticForm() {
                 !valid
             ) {
 
-                const firstError =
-                    document.querySelector(
+                document
+                    .querySelector(
                         ".input-error"
-                    );
-
-
-                firstError
+                    )
                     ?.focus();
 
 
@@ -1821,11 +1462,11 @@ function setupDiagnosticForm() {
 
             redirectToRadar({
 
-                company,
+                region,
+
+                businessQuery,
 
                 segment,
-
-                region,
 
                 phone
 
@@ -1838,189 +1479,20 @@ function setupDiagnosticForm() {
 
 
 /* =========================================================
-   REDIRECIONAR PARA RADAR
+   REDIRECIONAR PARA O RADAR
 ========================================================= */
 
 function redirectToRadar({
-    company,
-    segment,
+
     region,
+
+    businessQuery,
+
+    segment,
+
     phone
+
 }) {
-
-    const form =
-        document.getElementById(
-            "diagnosticForm"
-        );
-
-
-    const button =
-        form?.querySelector(
-            'button[type="submit"]'
-        );
-
-
-    const originalButtonHTML =
-        button?.innerHTML ||
-        "";
-
-
-    if (
-        button
-    ) {
-
-        button.disabled =
-            true;
-
-
-        button.innerHTML =
-            `
-                <span>
-                    Preparando sua análise...
-                </span>
-            `;
-
-    }
-
-
-    const address =
-        document
-            .getElementById(
-                "placeAddress"
-            )
-            ?.value
-            .trim() ||
-        "";
-
-
-    const city =
-        document
-            .getElementById(
-                "placeCity"
-            )
-            ?.value
-            .trim() ||
-        "";
-
-
-    const state =
-        document
-            .getElementById(
-                "placeState"
-            )
-            ?.value
-            .trim() ||
-        "";
-
-
-    const postcode =
-        document
-            .getElementById(
-                "placePostcode"
-            )
-            ?.value
-            .trim() ||
-        "";
-
-
-    const lat =
-        document
-            .getElementById(
-                "placeLat"
-            )
-            ?.value ||
-        "";
-
-
-    const lon =
-        document
-            .getElementById(
-                "placeLon"
-            )
-            ?.value ||
-        "";
-
-
-    const placeId =
-        document
-            .getElementById(
-                "placeId"
-            )
-            ?.value ||
-        "";
-
-
-    /*
-        Salva localmente antes
-        do redirecionamento.
-    */
-
-    const leadData = {
-
-        empresa:
-            company,
-
-        segmento:
-            segment,
-
-        regiao:
-            region,
-
-        telefone:
-            phone,
-
-        endereco:
-            address,
-
-        cidade:
-            city,
-
-        estado:
-            state,
-
-        cep:
-            postcode,
-
-        lat,
-
-        lon,
-
-        placeId,
-
-        origem:
-            "posicionamento-local",
-
-        timestamp:
-            new Date()
-                .toISOString()
-
-    };
-
-
-    try {
-
-        localStorage.setItem(
-            "radarLocalLead",
-            JSON.stringify(
-                leadData
-            )
-        );
-
-    }
-
-    catch (error) {
-
-        console.warn(
-            "Não foi possível salvar o lead localmente.",
-            error
-        );
-
-    }
-
-
-    /*
-        Monta URL do Radar.
-    */
 
     const destination =
         new URL(
@@ -2028,9 +1500,15 @@ function redirectToRadar({
         );
 
 
+    /*
+        O Radar vai usar estes dados
+        para fazer a busca REAL
+        pelo estabelecimento.
+    */
+
     destination.searchParams.set(
-        "empresa",
-        company
+        "busca",
+        businessQuery
     );
 
 
@@ -2058,98 +1536,132 @@ function redirectToRadar({
     );
 
 
+    destination.searchParams.set(
+        "cidade",
+        selectedCity.name
+    );
+
+
+    destination.searchParams.set(
+        "estado",
+        selectedCity.stateCode
+    );
+
+
+    destination.searchParams.set(
+        "city_lat",
+        selectedCity.lat
+    );
+
+
+    destination.searchParams.set(
+        "city_lon",
+        selectedCity.lon
+    );
+
+
+    if (
+        selectedCity.placeId
+    ) {
+
+        destination.searchParams.set(
+            "city_place_id",
+            selectedCity.placeId
+        );
+
+    }
+
+
     /*
-        Só envia dados estruturados
-        se o local foi selecionado.
+        Mantém UTMs.
     */
-
-    if (
-        address
-    ) {
-
-        destination.searchParams.set(
-            "endereco",
-            address
-        );
-
-    }
-
-
-    if (
-        city
-    ) {
-
-        destination.searchParams.set(
-            "cidade",
-            city
-        );
-
-    }
-
-
-    if (
-        state
-    ) {
-
-        destination.searchParams.set(
-            "estado",
-            state
-        );
-
-    }
-
-
-    if (
-        postcode
-    ) {
-
-        destination.searchParams.set(
-            "cep",
-            postcode
-        );
-
-    }
-
-
-    if (
-        lat
-    ) {
-
-        destination.searchParams.set(
-            "lat",
-            lat
-        );
-
-    }
-
-
-    if (
-        lon
-    ) {
-
-        destination.searchParams.set(
-            "lon",
-            lon
-        );
-
-    }
-
-
-    if (
-        placeId
-    ) {
-
-        destination.searchParams.set(
-            "place_id",
-            placeId
-        );
-
-    }
-
 
     copyTrackingParameters(
         destination
     );
+
+
+    /*
+        Salva o contexto antes
+        de sair da página.
+    */
+
+    try {
+
+        localStorage.setItem(
+            "radarLocalLead",
+            JSON.stringify({
+
+                busca:
+                    businessQuery,
+
+                segmento:
+                    segment,
+
+                regiao:
+                    region,
+
+                telefone:
+                    phone,
+
+                cidade:
+                    selectedCity.name,
+
+                estado:
+                    selectedCity.stateCode,
+
+                lat:
+                    selectedCity.lat,
+
+                lon:
+                    selectedCity.lon,
+
+                cityPlaceId:
+                    selectedCity.placeId,
+
+                origem:
+                    "posicionamento-local",
+
+                timestamp:
+                    new Date()
+                        .toISOString()
+
+            })
+        );
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "Não foi possível salvar o contexto local.",
+            error
+        );
+
+    }
+
+
+    const button =
+        document.querySelector(
+            "#diagnosticForm button[type='submit']"
+        );
+
+
+    if (
+        button
+    ) {
+
+        button.disabled =
+            true;
+
+
+        button.innerHTML =
+            `
+                Buscando sua empresa...
+                <span>→</span>
+            `;
+
+    }
 
 
     setTimeout(
@@ -2159,94 +1671,58 @@ function redirectToRadar({
                 destination.toString();
 
         },
-        500
-    );
-
-
-    /*
-        Segurança caso o browser
-        bloqueie a navegação.
-    */
-
-    setTimeout(
-        function () {
-
-            if (
-                button
-            ) {
-
-                button.disabled =
-                    false;
-
-
-                button.innerHTML =
-                    originalButtonHTML;
-
-            }
-
-        },
-        5000
+        450
     );
 
 }
 
 
 /* =========================================================
-   UTM / TRACKING
+   TRACKING
 ========================================================= */
 
 function copyTrackingParameters(
     destination
 ) {
 
-    const currentParams =
+    const current =
         new URLSearchParams(
             window.location.search
         );
 
 
-    const parameters = [
-
+    [
         "utm_source",
-
         "utm_medium",
-
         "utm_campaign",
-
         "utm_content",
-
         "utm_term",
-
         "fbclid",
-
         "gclid"
+    ]
+        .forEach(
+            function (key) {
 
-    ];
-
-
-    parameters.forEach(
-        function (parameter) {
-
-            const value =
-                currentParams.get(
-                    parameter
-                );
-
-
-            if (
-                value
-            ) {
-
-                destination
-                    .searchParams
-                    .set(
-                        parameter,
-                        value
+                const value =
+                    current.get(
+                        key
                     );
 
-            }
 
-        }
-    );
+                if (
+                    value
+                ) {
+
+                    destination
+                        .searchParams
+                        .set(
+                            key,
+                            value
+                        );
+
+                }
+
+            }
+        );
 
 }
