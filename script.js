@@ -564,10 +564,26 @@ async function searchPlaces(
             );
 
 
-        url.searchParams.set(
-            "text",
-            query
-        );
+        const regionInput =
+    document.getElementById(
+        "region"
+    );
+
+const region =
+    regionInput
+        ?.value
+        .trim() ||
+    "";
+
+const searchText =
+    region
+        ? `${query}, ${region}, Brasil`
+        : `${query}, Brasil`;
+
+url.searchParams.set(
+    "text",
+    searchText
+);
 
 
         url.searchParams.set(
