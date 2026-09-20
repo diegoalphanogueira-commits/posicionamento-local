@@ -964,3 +964,60 @@ function restoreSubmitButton(
     }
 
 }
+
+/* =========================================================
+   FORM STATES
+========================================================= */
+
+.input-error {
+    border-color: #ea4335 !important;
+
+    box-shadow:
+        0 0 0 4px rgba(234, 67, 53, 0.08) !important;
+}
+
+.field-error {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #ea4335;
+
+    font-size: 0.66rem;
+
+    font-weight: 600;
+}
+
+.form-submit:disabled {
+    cursor: wait;
+
+    opacity: 0.86;
+
+    transform: none;
+}
+
+.button-loading {
+    width: 17px;
+    height: 17px;
+
+    display: inline-block;
+
+    border-radius: 50%;
+
+    border:
+        2px solid rgba(255, 255, 255, 0.35);
+
+    border-top-color:
+        #ffffff;
+
+    animation:
+        button-spin 0.7s linear infinite;
+}
+
+@keyframes button-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
