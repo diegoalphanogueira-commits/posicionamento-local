@@ -1538,7 +1538,118 @@
                     class="diagnostic-form"
                     id="diagnosticForm"
                 >
+<div class="field place-search-field">
 
+    <label for="placeSearch">
+        Encontre sua empresa ou endereço
+    </label>
+
+    <div class="place-search-wrapper">
+
+        <span class="place-search-icon">
+            ◎
+        </span>
+
+        <input
+            id="placeSearch"
+            type="text"
+            placeholder="Digite o nome da empresa ou endereço"
+            autocomplete="off"
+        >
+
+        <span
+            id="placeSearchLoader"
+            class="place-search-loader hidden"
+        ></span>
+
+    </div>
+
+    <div
+        id="placeSuggestions"
+        class="place-suggestions hidden"
+    ></div>
+
+    <div
+        id="selectedPlaceCard"
+        class="selected-place-card hidden"
+    >
+
+        <div class="selected-place-check">
+            ✓
+        </div>
+
+        <div class="selected-place-copy">
+
+            <span>
+                LOCAL IDENTIFICADO
+            </span>
+
+            <strong id="selectedPlaceName">
+                Empresa
+            </strong>
+
+            <small id="selectedPlaceAddress">
+                Endereço
+            </small>
+
+        </div>
+
+        <button
+            type="button"
+            id="changePlaceButton"
+            class="change-place-button"
+        >
+            Alterar
+        </button>
+
+    </div>
+
+
+    <!-- DADOS ESTRUTURADOS -->
+
+    <input
+        type="hidden"
+        id="placeAddress"
+        name="placeAddress"
+    >
+
+    <input
+        type="hidden"
+        id="placeCity"
+        name="placeCity"
+    >
+
+    <input
+        type="hidden"
+        id="placeState"
+        name="placeState"
+    >
+
+    <input
+        type="hidden"
+        id="placePostcode"
+        name="placePostcode"
+    >
+
+    <input
+        type="hidden"
+        id="placeLat"
+        name="placeLat"
+    >
+
+    <input
+        type="hidden"
+        id="placeLon"
+        name="placeLon"
+    >
+
+    <input
+        type="hidden"
+        id="placeId"
+        name="placeId"
+    >
+
+</div>
                     <div class="form-row">
 
                         <label>
