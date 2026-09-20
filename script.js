@@ -1,81 +1,39 @@
 /* =========================================================
-   CONFIGURAÇÕES
+   POSICIONAMENTO LOCAL
+   Integração com Radar Local
 ========================================================= */
 
 
-/*
-WHATSAPP DO DIEGO
-
-Formato:
-55 + DDD + número
-
-Exemplo:
-5511999999999
-*/
-
-const WHATSAPP_NUMBER = "5511999999999";
-
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
 
 /*
-URL DO RADAR LOCAL
+    COLE A URL REAL DO RADAR LOCAL AQUI.
 
-COLE AQUI O LINK REAL DA FERRAMENTA.
+    Exemplo:
+    const RADAR_LOCAL_URL =
+        "https://seuusuario.github.io/radar-local/";
 
-Exemplo:
-
-https://seudominio.github.io/radar-local/
-
-ou
-
-https://app.usekorax.com/diagnostico
-
-NÃO coloque parâmetros depois da URL.
+    Se estiver dentro do mesmo domínio também pode ser:
+    const RADAR_LOCAL_URL = "/radar-local/";
 */
 
 const RADAR_LOCAL_URL =
     "COLE_AQUI_A_URL_DO_RADAR_LOCAL";
 
 
-
-/* =========================================================
-   CONFIGURAÇÃO DO QUIZ
-========================================================= */
-
-const TOTAL_STEPS = 6;
-
-let currentStep = 1;
-
-
 /*
-RESPOSTAS
+    Tempo curto para mostrar o estado "Analisando..."
+    antes de abrir o Radar.
 */
 
-const answers = {
-
-    segmento: "",
-
-    google: "",
-
-    site: "",
-
-    avaliacoes: "",
-
-    objetivo: "",
-
-    nome: "",
-
-    empresa: "",
-
-    cidade: "",
-
-    telefone: ""
-
-};
+const REDIRECT_DELAY = 700;
 
 
 
 /* =========================================================
-   INICIAR PÁGINA
+   INICIALIZAÇÃO
 ========================================================= */
 
 document.addEventListener(
@@ -86,11 +44,11 @@ document.addEventListener(
 
         setupMobileMenu();
 
-        setupWhatsApp();
-
         setupPhoneMask();
 
-        setupQuiz();
+        setupDiagnosticForm();
+
+        setupSmoothMenuClose();
 
     }
 );
@@ -103,18 +61,18 @@ document.addEventListener(
 
 function setCurrentYear() {
 
-    const element =
+    const currentYear =
         document.getElementById(
             "currentYear"
         );
 
 
-    if (!element) {
+    if (!currentYear) {
         return;
     }
 
 
-    element.textContent =
+    currentYear.textContent =
         new Date().getFullYear();
 
 }
@@ -129,7 +87,7 @@ function setupMobileMenu() {
 
     const button =
         document.getElementById(
-            "mobileMenuButton"
+            "menuToggle"
         );
 
 
@@ -149,19 +107,19 @@ function setupMobileMenu() {
         "click",
         () => {
 
-            const open =
+            const isOpen =
                 menu.classList.contains(
                     "active"
                 );
 
 
-            if (open) {
+            if (isOpen) {
 
-                closeMenu();
+                closeMobileMenu();
 
             } else {
 
-                openMenu();
+                openMobileMenu();
 
             }
 
@@ -170,37 +128,7 @@ function setupMobileMenu() {
 
 
 
-    menu
-        .querySelectorAll("a")
-        .forEach((link) => {
-
-            link.addEventListener(
-                "click",
-                closeMenu
-            );
-
-        });
-
-
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            if (
-                window.innerWidth > 1050
-            ) {
-
-                closeMenu();
-
-            }
-
-        }
-    );
-
-
-
-    function openMenu() {
+    function openMobileMenu() {
 
         menu.classList.add(
             "active"
@@ -221,7 +149,7 @@ function setupMobileMenu() {
 
 
 
-    function closeMenu() {
+    function closeMobileMenu() {
 
         menu.classList.remove(
             "active"
@@ -240,70 +168,108 @@ function setupMobileMenu() {
 
     }
 
+
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            if (
+                window.innerWidth > 1060
+            ) {
+
+                closeMobileMenu();
+
+            }
+
+        }
+    );
+
 }
 
 
 
 /* =========================================================
-   WHATSAPP
+   FECHAR MENU AO CLICAR EM LINK
 ========================================================= */
 
-function setupWhatsApp() {
+function setupSmoothMenuClose() {
 
-    const button =
+    const menu =
         document.getElementById(
-            "floatingWhatsapp"
+            "mobileMenu"
         );
 
 
-    if (!button) {
+    const button =
+        document.getElementById(
+            "menuToggle"
+        );
+
+
+    if (!menu) {
         return;
     }
 
 
-    const message = `
-Olá Diego!
 
-Vi a página de Posicionamento Local e gostaria de entender como minha empresa pode aparecer melhor no Google e na minha região.
-    `.trim();
+    menu
+        .querySelectorAll("a")
+        .forEach(
+            (link) => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        menu.classList.remove(
+                            "active"
+                        );
 
 
-    button.href =
-        createWhatsAppURL(
-            message
+                        document.body.classList.remove(
+                            "menu-open"
+                        );
+
+
+                        if (button) {
+
+                            button.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
         );
-
-
-    button.target =
-        "_blank";
-
-
-    button.rel =
-        "noopener noreferrer";
 
 }
 
 
 
 /* =========================================================
-   MÁSCARA TELEFONE
+   MÁSCARA WHATSAPP
 ========================================================= */
 
 function setupPhoneMask() {
 
-    const input =
+    const phone =
         document.getElementById(
-            "quizPhone"
+            "phone"
         );
 
 
-    if (!input) {
+    if (!phone) {
         return;
     }
 
 
 
-    input.addEventListener(
+    phone.addEventListener(
         "input",
         (event) => {
 
@@ -312,59 +278,57 @@ function setupPhoneMask() {
                     .replace(
                         /\D/g,
                         ""
+                    )
+                    .substring(
+                        0,
+                        11
                     );
 
 
-            value =
-                value.substring(
-                    0,
-                    11
-                );
-
-
+            /*
+                (11) 99999-9999
+            */
 
             if (
-                value.length > 0
+                value.length <= 2
             ) {
 
-                value =
-                    "(" + value;
+                event.target.value =
+                    value.length
+                        ? `(${value}`
+                        : "";
+
+                return;
 
             }
 
 
             if (
-                value.length > 3
+                value.length <= 6
             ) {
 
-                value =
-                    value.slice(
-                        0,
-                        3
-                    ) +
-                    ") " +
-                    value.slice(3);
+                event.target.value =
+                    `(${value.slice(0, 2)}) ${value.slice(2)}`;
+
+                return;
 
             }
 
 
             if (
-                value.length > 10
+                value.length <= 10
             ) {
 
-                value =
-                    value.slice(
-                        0,
-                        10
-                    ) +
-                    "-" +
-                    value.slice(10);
+                event.target.value =
+                    `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+
+                return;
 
             }
 
 
             event.target.value =
-                value;
+                `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
 
         }
     );
@@ -374,474 +338,114 @@ function setupPhoneMask() {
 
 
 /* =========================================================
-   QUIZ
+   FORMULÁRIO
 ========================================================= */
 
-function setupQuiz() {
+function setupDiagnosticForm() {
 
-    const quiz =
+    const form =
         document.getElementById(
-            "localQuiz"
+            "diagnosticForm"
         );
 
 
-    if (!quiz) {
+    if (!form) {
         return;
     }
 
 
-    const options =
-        quiz.querySelectorAll(
-            ".quiz-option"
-        );
 
-
-    const backButton =
-        document.getElementById(
-            "quizBack"
-        );
-
-
-    const finishButton =
-        document.getElementById(
-            "finishQuiz"
-        );
-
-
-
-    showStep(1);
-
-
-
-    /* =====================================================
-       RESPOSTAS
-    ====================================================== */
-
-    options.forEach(
-        (option) => {
-
-            option.addEventListener(
-                "click",
-                () => {
-
-                    const step =
-                        option.closest(
-                            ".quiz-step"
-                        );
-
-
-                    if (!step) {
-                        return;
-                    }
-
-
-                    const stepNumber =
-                        Number(
-                            step.dataset.step
-                        );
-
-
-                    const value =
-                        option.dataset.value;
-
-
-
-                    /*
-                    REMOVE SELEÇÃO ANTERIOR
-                    */
-
-                    step
-                        .querySelectorAll(
-                            ".quiz-option"
-                        )
-                        .forEach(
-                            (item) => {
-
-                                item.classList
-                                    .remove(
-                                        "selected"
-                                    );
-
-                            }
-                        );
-
-
-
-                    /*
-                    MARCA NOVA OPÇÃO
-                    */
-
-                    option.classList.add(
-                        "selected"
-                    );
-
-
-
-                    /*
-                    SALVA
-                    */
-
-                    saveAnswer(
-                        stepNumber,
-                        value
-                    );
-
-
-
-                    /*
-                    AVANÇA
-                    */
-
-                    setTimeout(
-                        () => {
-
-                            if (
-                                stepNumber <
-                                TOTAL_STEPS
-                            ) {
-
-                                showStep(
-                                    stepNumber + 1
-                                );
-
-                            }
-
-                        },
-                        180
-                    );
-
-                }
-            );
-
-        }
+    form.addEventListener(
+        "submit",
+        handleDiagnosticSubmit
     );
-
-
-
-    /* =====================================================
-       VOLTAR
-    ====================================================== */
-
-    if (backButton) {
-
-        backButton.addEventListener(
-            "click",
-            () => {
-
-                if (
-                    currentStep <= 1
-                ) {
-
-                    return;
-
-                }
-
-
-                showStep(
-                    currentStep - 1
-                );
-
-            }
-        );
-
-    }
-
-
-
-    /* =====================================================
-       FINALIZAR
-    ====================================================== */
-
-    if (finishButton) {
-
-        finishButton.addEventListener(
-            "click",
-            finishQuiz
-        );
-
-    }
 
 }
 
 
 
 /* =========================================================
-   SALVAR RESPOSTA
+   ENVIO DO DIAGNÓSTICO
 ========================================================= */
 
-function saveAnswer(
-    step,
-    value
+function handleDiagnosticSubmit(
+    event
 ) {
 
-    switch (step) {
-
-        case 1:
-
-            answers.segmento =
-                value;
-
-            break;
-
-
-        case 2:
-
-            answers.google =
-                value;
-
-            break;
-
-
-        case 3:
-
-            answers.site =
-                value;
-
-            break;
-
-
-        case 4:
-
-            answers.avaliacoes =
-                value;
-
-            break;
-
-
-        case 5:
-
-            answers.objetivo =
-                value;
-
-            break;
-
-    }
-
-}
+    event.preventDefault();
 
 
 
-/* =========================================================
-   MOSTRAR PASSO
-========================================================= */
-
-function showStep(
-    number
-) {
-
-    const steps =
-        document.querySelectorAll(
-            ".quiz-step"
-        );
-
-
-    const result =
+    const companyInput =
         document.getElementById(
-            "quizResult"
+            "company"
         );
 
 
-    const back =
+    const segmentInput =
         document.getElementById(
-            "quizBack"
+            "segment"
         );
 
 
-
-    if (result) {
-
-        result.hidden = true;
-
-    }
+    const regionInput =
+        document.getElementById(
+            "region"
+        );
 
 
-
-    steps.forEach(
-        (step) => {
-
-            step.hidden = true;
-
-            step.classList.remove(
-                "active"
-            );
-
-        }
-    );
+    const phoneInput =
+        document.getElementById(
+            "phone"
+        );
 
 
-
-    const active =
+    const submitButton =
         document.querySelector(
-            `.quiz-step[data-step="${number}"]`
+            ".form-submit"
         );
 
 
-    if (!active) {
+
+    if (
+        !companyInput ||
+        !segmentInput ||
+        !regionInput ||
+        !phoneInput
+    ) {
+
         return;
-    }
-
-
-
-    active.hidden =
-        false;
-
-
-    active.classList.add(
-        "active"
-    );
-
-
-    currentStep =
-        number;
-
-
-
-    if (back) {
-
-        back.hidden =
-            number === 1;
 
     }
 
-
-
-    updateProgress();
-
-}
-
-
-
-/* =========================================================
-   PROGRESSO
-========================================================= */
-
-function updateProgress() {
-
-    const text =
-        document.getElementById(
-            "quizStepText"
-        );
-
-
-    const percentage =
-        document.getElementById(
-            "quizPercentage"
-        );
-
-
-    const bar =
-        document.getElementById(
-            "quizProgressBar"
-        );
-
-
-    const progress =
-        Math.round(
-            (
-                currentStep /
-                TOTAL_STEPS
-            ) * 100
-        );
-
-
-
-    if (text) {
-
-        text.textContent =
-            `Pergunta ${currentStep} de ${TOTAL_STEPS}`;
-
-    }
-
-
-    if (percentage) {
-
-        percentage.textContent =
-            `${progress}%`;
-
-    }
-
-
-    if (bar) {
-
-        bar.style.width =
-            `${progress}%`;
-
-    }
-
-}
-
-
-
-/* =========================================================
-   FINALIZAR QUIZ
-========================================================= */
-
-function finishQuiz() {
-
-    const name =
-        document
-            .getElementById(
-                "quizName"
-            )
-            ?.value
-            .trim();
 
 
     const company =
-        document
-            .getElementById(
-                "quizCompany"
-            )
-            ?.value
-            .trim();
+        companyInput.value.trim();
 
 
-    const city =
-        document
-            .getElementById(
-                "quizCity"
-            )
-            ?.value
-            .trim();
+    const segment =
+        segmentInput.value.trim();
+
+
+    const region =
+        regionInput.value.trim();
 
 
     const phone =
-        document
-            .getElementById(
-                "quizPhone"
-            )
-            ?.value
-            .trim();
-
-
-    const consent =
-        document
-            .getElementById(
-                "quizConsent"
-            )
-            ?.checked;
+        phoneInput.value.trim();
 
 
 
-    /*
-    VALIDAÇÃO
-    */
-
-    if (!name) {
-
-        fieldError(
-            "quizName"
-        );
-
-        return;
-
-    }
-
+    /* =====================================================
+       VALIDAÇÕES
+    ====================================================== */
 
     if (!company) {
 
-        fieldError(
-            "quizCompany"
+        showFieldError(
+            companyInput,
+            "Digite o nome da empresa."
         );
 
         return;
@@ -849,10 +453,11 @@ function finishQuiz() {
     }
 
 
-    if (!city) {
+    if (!segment) {
 
-        fieldError(
-            "quizCity"
+        showFieldError(
+            segmentInput,
+            "Informe o segmento da empresa."
         );
 
         return;
@@ -860,10 +465,11 @@ function finishQuiz() {
     }
 
 
-    if (!phone) {
+    if (!region) {
 
-        fieldError(
-            "quizPhone"
+        showFieldError(
+            regionInput,
+            "Informe a cidade ou região."
         );
 
         return;
@@ -871,453 +477,129 @@ function finishQuiz() {
     }
 
 
-    if (!consent) {
 
-        alert(
-            "Autorize o contato para finalizar o diagnóstico."
+    const phoneDigits =
+        phone.replace(
+            /\D/g,
+            ""
+        );
+
+
+    if (
+        phoneDigits.length < 10
+    ) {
+
+        showFieldError(
+            phoneInput,
+            "Digite um WhatsApp válido."
         );
 
         return;
 
     }
+
+
+
+    /* =====================================================
+       DADOS
+    ====================================================== */
+
+    const diagnosticData = {
+
+        empresa:
+            company,
+
+        segmento:
+            segment,
+
+        regiao:
+            region,
+
+        telefone:
+            phoneDigits,
+
+        origem:
+            "posicionamento-local",
+
+        etapa:
+            "landing-page"
+
+    };
 
 
 
     /*
-    SALVA
+        Salva também localmente.
+
+        Isso pode ser útil se depois o Radar estiver
+        no mesmo domínio ou se quisermos recuperar
+        essas informações durante a navegação.
     */
 
-    answers.nome =
-        name;
-
-
-    answers.empresa =
-        company;
-
-
-    answers.cidade =
-        city;
-
-
-    answers.telefone =
-        phone;
-
-
-
-    /*
-    PRÉ-DIAGNÓSTICO
-    */
-
-    const priorities =
-        calculatePriorities();
-
-
-
-    /*
-    RESULTADO
-    */
-
-    showResult(
-        priorities
+    saveDiagnosticData(
+        diagnosticData
     );
 
 
 
-    /*
-    PREPARA LINK DO RADAR
-    */
-
-    setupRadarButton(
-        priorities
-    );
-
-
-
-    /*
-    EVENTO FUTURO
-    META PIXEL / GTM
-    */
+    /* =====================================================
+       EVENTO FUTURO
+       META PIXEL / GTM / ANALYTICS
+    ====================================================== */
 
     window.dispatchEvent(
 
         new CustomEvent(
-            "localDiagnosticCompleted",
+            "localDiagnosticStarted",
             {
 
-                detail: {
-
-                    ...answers,
-
-                    priorities
-
-                }
+                detail:
+                    diagnosticData
 
             }
         )
 
     );
 
-}
 
 
+    /* =====================================================
+       ESTADO DO BOTÃO
+    ====================================================== */
 
-/* =========================================================
-   ERRO CAMPO
-========================================================= */
+    if (submitButton) {
 
-function fieldError(id) {
-
-    const input =
-        document.getElementById(id);
+        submitButton.disabled =
+            true;
 
 
-    if (!input) {
-        return;
+        submitButton.dataset.originalText =
+            submitButton.innerHTML;
+
+
+        submitButton.innerHTML = `
+            <span class="button-loading"></span>
+            Analisando sua região...
+        `;
+
     }
 
 
-    input.focus();
 
-
-    input.style.borderColor =
-        "#ea4335";
-
-
-    input.style.boxShadow =
-        "0 0 0 4px rgba(234,67,53,.08)";
-
+    /* =====================================================
+       ABRIR RADAR
+    ====================================================== */
 
     setTimeout(
         () => {
 
-            input.style.borderColor =
-                "";
-
-
-            input.style.boxShadow =
-                "";
-
-        },
-        1800
-    );
-
-}
-
-
-
-/* =========================================================
-   CALCULAR PRIORIDADES
-========================================================= */
-
-function calculatePriorities() {
-
-    const scores = {
-
-        google: 0,
-
-        site: 0,
-
-        reputacao: 0
-
-    };
-
-
-
-    /* =====================================================
-       GOOGLE
-    ====================================================== */
-
-    switch (
-        answers.google
-    ) {
-
-        case "Não":
-
-            scores.google += 6;
-
-            break;
-
-
-        case "Não sei":
-
-            scores.google += 5;
-
-            break;
-
-
-        case "Sim, mas pouco estruturado":
-
-            scores.google += 4;
-
-            break;
-
-
-        case "Sim, bem estruturado":
-
-            scores.google += 1;
-
-            break;
-
-    }
-
-
-
-    /* =====================================================
-       SITE
-    ====================================================== */
-
-    switch (
-        answers.site
-    ) {
-
-        case "Não":
-
-            scores.site += 6;
-
-            break;
-
-
-        case "Sim, mas precisa melhorar":
-
-            scores.site += 4;
-
-            break;
-
-
-        case "Sim":
-
-            scores.site += 1;
-
-            break;
-
-    }
-
-
-
-    /* =====================================================
-       AVALIAÇÕES
-    ====================================================== */
-
-    switch (
-        answers.avaliacoes
-    ) {
-
-        case "Quase nenhuma":
-
-            scores.reputacao += 6;
-
-            break;
-
-
-        case "Temos poucas avaliações":
-
-            scores.reputacao += 4;
-
-            break;
-
-
-        case "Não sei":
-
-            scores.reputacao += 4;
-
-            break;
-
-
-        case "Temos muitas avaliações":
-
-            scores.reputacao += 1;
-
-            break;
-
-    }
-
-
-
-    /* =====================================================
-       CENÁRIO
-    ====================================================== */
-
-    switch (
-        answers.objetivo
-    ) {
-
-        case "Dependemos muito de indicação":
-
-            scores.google += 3;
-
-            scores.site += 2;
-
-            scores.reputacao += 2;
-
-            break;
-
-
-        case "Queremos aparecer mais no Google":
-
-            scores.google += 5;
-
-            break;
-
-
-        case "Queremos transmitir mais confiança":
-
-            scores.site += 3;
-
-            scores.reputacao += 4;
-
-            break;
-
-
-        case "Queremos gerar mais oportunidades":
-
-            scores.google += 3;
-
-            scores.site += 2;
-
-            scores.reputacao += 2;
-
-            break;
-
-
-        case "Precisamos organizar tudo":
-
-            scores.google += 4;
-
-            scores.site += 4;
-
-            scores.reputacao += 4;
-
-            break;
-
-    }
-
-
-
-    /*
-    ORDENA
-    */
-
-    const ordered =
-        Object
-            .entries(scores)
-            .sort(
-                (a, b) =>
-                    b[1] - a[1]
+            openRadarLocal(
+                diagnosticData,
+                submitButton
             );
 
-
-
-    /*
-    SE OS TRÊS ESTÃO ALTOS,
-    MOSTRA ESTRUTURA COMPLETA
-    */
-
-    const strongProblems =
-        ordered.filter(
-            ([, score]) =>
-                score >= 5
-        );
-
-
-    if (
-        strongProblems.length === 3
-    ) {
-
-        return [
-
-            {
-                key:
-                    "estrutura",
-
-                label:
-                    "Estrutura Local Completa",
-
-                score:
-                    strongProblems
-                        .reduce(
-                            (
-                                total,
-                                [, score]
-                            ) =>
-                                total +
-                                score,
-                            0
-                        )
-
-            },
-
-            ...ordered
-                .slice(0, 2)
-                .map(
-                    ([key, score]) => ({
-
-                        key,
-
-                        score,
-
-                        label:
-                            getPriorityLabel(
-                                key
-                            )
-
-                    })
-                )
-
-        ];
-
-    }
-
-
-
-    return ordered
-        .slice(0, 3)
-        .map(
-            ([key, score]) => ({
-
-                key,
-
-                score,
-
-                label:
-                    getPriorityLabel(
-                        key
-                    )
-
-            })
-        );
-
-}
-
-
-
-/* =========================================================
-   NOMES
-========================================================= */
-
-function getPriorityLabel(
-    key
-) {
-
-    const labels = {
-
-        google:
-            "Google + SEO Local",
-
-        site:
-            "Site Profissional",
-
-        reputacao:
-            "Avaliações e Reputação",
-
-        estrutura:
-            "Estrutura Local Completa"
-
-    };
-
-
-    return (
-        labels[key] ||
-        key
+        },
+        REDIRECT_DELAY
     );
 
 }
@@ -1325,185 +607,17 @@ function getPriorityLabel(
 
 
 /* =========================================================
-   EXIBIR RESULTADO
+   ABRIR RADAR LOCAL
 ========================================================= */
 
-function showResult(
-    priorities
+function openRadarLocal(
+    data,
+    submitButton
 ) {
 
-    const steps =
-        document.querySelectorAll(
-            ".quiz-step"
-        );
-
-
-    const result =
-        document.getElementById(
-            "quizResult"
-        );
-
-
-    const container =
-        document.getElementById(
-            "resultPriorities"
-        );
-
-
-    const back =
-        document.getElementById(
-            "quizBack"
-        );
-
-
-
-    steps.forEach(
-        (step) => {
-
-            step.hidden = true;
-
-        }
-    );
-
-
-
-    if (back) {
-
-        back.hidden = true;
-
-    }
-
-
-
-    if (container) {
-
-        container.innerHTML =
-            "";
-
-
-        priorities.forEach(
-            (priority) => {
-
-                const tag =
-                    document.createElement(
-                        "span"
-                    );
-
-
-                tag.textContent =
-                    priority.label;
-
-
-                container.appendChild(
-                    tag
-                );
-
-            }
-        );
-
-    }
-
-
-
-    if (result) {
-
-        result.hidden =
-            false;
-
-    }
-
-
-
     /*
-    MUDA TEXTO DO BOTÃO
-    */
-
-    const radarButton =
-        document.getElementById(
-            "resultWhatsapp"
-        );
-
-
-    if (radarButton) {
-
-        radarButton.textContent =
-            "Analisar minha região no Radar Local";
-
-    }
-
-
-
-    /*
-    100%
-    */
-
-    const stepText =
-        document.getElementById(
-            "quizStepText"
-        );
-
-
-    const percentage =
-        document.getElementById(
-            "quizPercentage"
-        );
-
-
-    const bar =
-        document.getElementById(
-            "quizProgressBar"
-        );
-
-
-    if (stepText) {
-
-        stepText.textContent =
-            "Pré-diagnóstico concluído";
-
-    }
-
-
-    if (percentage) {
-
-        percentage.textContent =
-            "100%";
-
-    }
-
-
-    if (bar) {
-
-        bar.style.width =
-            "100%";
-
-    }
-
-}
-
-
-
-/* =========================================================
-   LINK PARA RADAR LOCAL
-========================================================= */
-
-function setupRadarButton(
-    priorities
-) {
-
-    const button =
-        document.getElementById(
-            "resultWhatsapp"
-        );
-
-
-    if (!button) {
-        return;
-    }
-
-
-
-    /*
-    VERIFICA URL
+        Enquanto a URL não estiver configurada,
+        evitamos quebrar a experiência.
     */
 
     if (
@@ -1513,21 +627,18 @@ function setupRadarButton(
         )
     ) {
 
-        console.warn(
-            "Configure RADAR_LOCAL_URL no início do script.js."
+        restoreSubmitButton(
+            submitButton
         );
 
 
-        button.href =
-            "#";
+        alert(
+            "O Radar Local ainda precisa ser conectado. Configure a URL no início do script.js."
+        );
 
 
-        button.addEventListener(
-            "click",
-            radarNotConfigured,
-            {
-                once: true
-            }
+        console.warn(
+            "Configure RADAR_LOCAL_URL no início do script.js."
         );
 
 
@@ -1537,106 +648,189 @@ function setupRadarButton(
 
 
 
-    /*
-    CRIA URL
-    */
+    try {
 
-    const url =
-        new URL(
-            RADAR_LOCAL_URL
+        const radarURL =
+            new URL(
+                RADAR_LOCAL_URL,
+                window.location.href
+            );
+
+
+
+        /*
+            DADOS PRINCIPAIS
+        */
+
+        radarURL.searchParams.set(
+            "empresa",
+            data.empresa
+        );
+
+
+        radarURL.searchParams.set(
+            "segmento",
+            data.segmento
+        );
+
+
+        radarURL.searchParams.set(
+            "regiao",
+            data.regiao
+        );
+
+
+        radarURL.searchParams.set(
+            "telefone",
+            data.telefone
+        );
+
+
+        radarURL.searchParams.set(
+            "origem",
+            data.origem
         );
 
 
 
-    /*
-    PARÂMETROS QUE SERÃO
-    ENVIADOS PARA O RADAR
-    */
+        /*
+            PRESERVA UTMs DA LANDING
+            CASO TENHA VINDO DE ANÚNCIO.
+        */
 
-    url.searchParams.set(
-        "empresa",
-        answers.empresa
-    );
-
-
-    url.searchParams.set(
-        "segmento",
-        answers.segmento
-    );
-
-
-    url.searchParams.set(
-        "regiao",
-        answers.cidade
-    );
-
-
-    url.searchParams.set(
-        "nome",
-        answers.nome
-    );
-
-
-    url.searchParams.set(
-        "telefone",
-        answers.telefone
-    );
-
-
-    url.searchParams.set(
-        "origem",
-        "posicionamento-local"
-    );
-
-
-    url.searchParams.set(
-        "prioridade",
-        priorities[0]?.key ||
-        ""
-    );
+        copyTrackingParameters(
+            radarURL
+        );
 
 
 
-    /*
-    EXEMPLO FINAL:
+        /*
+            EXEMPLO:
 
-    radar-local.com/
-    ?empresa=Studio%20X
-    &segmento=Estética
-    &regiao=Guarulhos
-    &origem=posicionamento-local
-    */
-
-
-
-    button.href =
-        url.toString();
+            /radar-local/
+            ?empresa=Studio%20Bella
+            &segmento=Estética
+            &regiao=Guarulhos%20SP
+            &telefone=11999999999
+            &origem=posicionamento-local
+        */
 
 
-    button.target =
-        "_self";
+        window.location.href =
+            radarURL.toString();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erro ao abrir Radar Local:",
+            error
+        );
 
 
-    button.rel =
-        "noopener";
+        restoreSubmitButton(
+            submitButton
+        );
+
+
+        alert(
+            "Não foi possível abrir o Radar Local. Verifique a URL configurada."
+        );
+
+    }
 
 }
 
 
 
 /* =========================================================
-   RADAR NÃO CONFIGURADO
+   SALVAR DADOS LOCALMENTE
 ========================================================= */
 
-function radarNotConfigured(
-    event
+function saveDiagnosticData(
+    data
 ) {
 
-    event.preventDefault();
+    try {
+
+        localStorage.setItem(
+            "radarLocalLead",
+            JSON.stringify(
+                {
+                    ...data,
+
+                    criadoEm:
+                        new Date()
+                            .toISOString()
+                }
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "Não foi possível salvar os dados localmente.",
+            error
+        );
+
+    }
+
+}
 
 
-    alert(
-        "O link do Radar Local ainda precisa ser configurado no script.js."
+
+/* =========================================================
+   UTMs / ORIGEM DE TRÁFEGO
+========================================================= */
+
+function copyTrackingParameters(
+    destinationURL
+) {
+
+    const currentParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const trackingParameters = [
+
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_content",
+        "utm_term",
+        "fbclid",
+        "gclid"
+
+    ];
+
+
+
+    trackingParameters.forEach(
+        (parameter) => {
+
+            const value =
+                currentParams.get(
+                    parameter
+                );
+
+
+            if (value) {
+
+                destinationURL
+                    .searchParams
+                    .set(
+                        parameter,
+                        value
+                    );
+
+            }
+
+        }
     );
 
 }
@@ -1644,24 +838,129 @@ function radarNotConfigured(
 
 
 /* =========================================================
-   WHATSAPP URL
+   ERRO VISUAL
 ========================================================= */
 
-function createWhatsAppURL(
+function showFieldError(
+    input,
     message
 ) {
 
-    const encoded =
-        encodeURIComponent(
-            message
+    clearFieldErrors();
+
+
+
+    input.classList.add(
+        "input-error"
+    );
+
+
+    const error =
+        document.createElement(
+            "span"
         );
 
 
-    return (
-        "https://wa.me/" +
-        WHATSAPP_NUMBER +
-        "?text=" +
-        encoded
+    error.className =
+        "field-error";
+
+
+    error.textContent =
+        message;
+
+
+    input.parentElement
+        .appendChild(
+            error
+        );
+
+
+    input.focus();
+
+
+
+    input.addEventListener(
+        "input",
+        () => {
+
+            input.classList.remove(
+                "input-error"
+            );
+
+
+            error.remove();
+
+        },
+        {
+            once: true
+        }
     );
+
+}
+
+
+
+/* =========================================================
+   LIMPAR ERROS
+========================================================= */
+
+function clearFieldErrors() {
+
+    document
+        .querySelectorAll(
+            ".input-error"
+        )
+        .forEach(
+            (input) => {
+
+                input.classList.remove(
+                    "input-error"
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".field-error"
+        )
+        .forEach(
+            (error) => {
+
+                error.remove();
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   RESTAURAR BOTÃO
+========================================================= */
+
+function restoreSubmitButton(
+    button
+) {
+
+    if (!button) {
+        return;
+    }
+
+
+    button.disabled =
+        false;
+
+
+    if (
+        button.dataset.originalText
+    ) {
+
+        button.innerHTML =
+            button.dataset.originalText;
+
+    }
 
 }
