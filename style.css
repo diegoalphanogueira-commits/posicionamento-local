@@ -3693,3 +3693,142 @@ button {
 
     line-height: 1.4;
 }
+/* =========================================================
+   AUTOCOMPLETE — EMPRESA / ENDEREÇO
+========================================================= */
+
+.business-search-field {
+    position: relative;
+    z-index: 40;
+}
+
+.business-search-field .place-search-wrapper {
+    position: relative;
+}
+
+.business-search-field .place-suggestions {
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    z-index: 9999;
+
+    margin-top: 6px;
+
+    max-height: 320px;
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 18px 45px
+        rgba(32, 45, 68, 0.16);
+}
+
+
+/* CADA RESULTADO */
+
+.business-search-field .place-suggestion {
+    width: 100%;
+
+    padding: 14px 16px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    border: 0;
+    border-bottom: 1px solid #edf0f4;
+
+    background: #ffffff;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.business-search-field .place-suggestion:first-child {
+    border-radius: 16px 16px 0 0;
+}
+
+.business-search-field .place-suggestion:last-child {
+    border-bottom: 0;
+
+    border-radius: 0 0 16px 16px;
+}
+
+.business-search-field .place-suggestion:hover {
+    background: #f5f8fd;
+}
+
+
+/* ÍCONE */
+
+.business-search-field .place-suggestion-icon {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    color: #2878f0;
+
+    background: #eaf2ff;
+
+    font-weight: 800;
+}
+
+
+/* TEXTO */
+
+.business-search-field .place-suggestion-copy {
+    min-width: 0;
+
+    display: block;
+}
+
+.business-search-field .place-suggestion-copy strong {
+    display: block;
+
+    color: #202124;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    line-height: 1.35;
+}
+
+.business-search-field .place-suggestion-copy span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #7d8898;
+
+    font-size: 0.66rem;
+
+    line-height: 1.45;
+}
+
+
+/* NÃO DEIXAR O CARD CORTAR O DROPDOWN */
+
+.diagnostic-section,
+.diagnostic-card,
+.diagnostic-form {
+    overflow: visible !important;
+}
