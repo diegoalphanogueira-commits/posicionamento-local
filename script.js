@@ -63,6 +63,80 @@ document.addEventListener(
        
        setupCustomSegment();
 
+       /* =========================================================
+   OUTRO SEGMENTO
+========================================================= */
+
+function setupCustomSegment() {
+
+    const segment =
+        document.getElementById(
+            "segment"
+        );
+
+    const customField =
+        document.getElementById(
+            "customSegmentField"
+        );
+
+    const customInput =
+        document.getElementById(
+            "customSegment"
+        );
+
+
+    if (
+        !segment ||
+        !customField ||
+        !customInput
+    ) {
+
+        return;
+
+    }
+
+
+    function updateCustomSegment() {
+
+        const isOther =
+            segment.value ===
+            "outro";
+
+
+        customField
+            .classList
+            .toggle(
+                "hidden",
+                !isOther
+            );
+
+
+        customInput.required =
+            isOther;
+
+
+        if (
+            !isOther
+        ) {
+
+            customInput.value =
+                "";
+
+        }
+
+    }
+
+
+    segment.addEventListener(
+        "change",
+        updateCustomSegment
+    );
+
+
+    updateCustomSegment();
+
+}
+
         setupDiagnosticForm();
 
     }
