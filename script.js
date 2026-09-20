@@ -33,12 +33,26 @@ let selectedCity = null;
 
 
 /* =========================================================
+   GOOGLE PLACES - EMPRESA
+========================================================= */
+
+let businessSearchTimer = null;
+
+let selectedBusiness = null;
+
+let businessSessionToken = null;
+
+let placesAutocompleteSuggestion = null;
+
+let placesAutocompleteSessionToken = null;
+
+/* =========================================================
    INICIALIZAÇÃO
 ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    async function () {
 
         setCurrentYear();
 
@@ -49,6 +63,8 @@ document.addEventListener(
         setupPhoneMask();
 
         setupCityAutocomplete();
+
+        await setupGooglePlaces();
 
         setupDiagnosticForm();
 
@@ -1335,6 +1351,1033 @@ function showError(
         );
 
     }
+
+}
+
+/* =========================================================
+   GOOGLE PLACES
+========================================================= */
+
+async function setupGooglePlaces() {
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    const suggestionsContainer =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (
+        !input ||
+        !suggestionsContainer
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const placesLibrary =
+            await google.maps.importLibrary(
+                "places"
+            );
+
+
+        placesAutocompleteSuggestion =
+            placesLibrary.AutocompleteSuggestion;
+
+
+        placesAutocompleteSessionToken =
+            placesLibrary.AutocompleteSessionToken;
+
+
+        createBusinessSessionToken();
+
+
+        input.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    input.value
+                        .trim();
+
+
+                selectedBusiness =
+                    null;
+
+
+                clearTimeout(
+                    businessSearchTimer
+                );
+
+
+                if (
+                    query.length < 2
+                ) {
+
+                    hideBusinessSuggestions();
+
+                    return;
+
+                }
+
+
+                businessSearchTimer =
+                    setTimeout(
+                        function () {
+
+                            searchBusinesses(
+                                query
+                            );
+
+                        },
+                        350
+                    );
+
+            }
+        );
+
+
+        const changeButton =
+            document.getElementById(
+                "changeBusinessButton"
+            );
+
+
+        if (
+            changeButton
+        ) {
+
+            changeButton.addEventListener(
+                "click",
+                function () {
+
+                    clearSelectedBusiness();
+
+                    input.focus();
+
+                }
+            );
+
+        }
+
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                const field =
+                    input.closest(
+                        ".business-search-field"
+                    );
+
+
+                if (
+                    field &&
+                    !field.contains(
+                        event.target
+                    )
+                ) {
+
+                    hideBusinessSuggestions();
+
+                }
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erro ao iniciar Google Places:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SESSION TOKEN
+========================================================= */
+
+function createBusinessSessionToken() {
+
+    if (
+        placesAutocompleteSessionToken
+    ) {
+
+        businessSessionToken =
+            new placesAutocompleteSessionToken();
+
+    }
+
+}
+
+
+/* =========================================================
+   BUSCAR EMPRESAS
+========================================================= */
+
+async function searchBusinesses(
+    query
+) {
+
+    if (
+        !placesAutocompleteSuggestion
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !selectedCity
+    ) {
+
+        renderBusinessMessage(
+            "Selecione primeiro a cidade."
+        );
+
+        return;
+
+    }
+
+
+    setBusinessLoading(
+        true
+    );
+
+
+    try {
+
+        const request = {
+
+            input:
+                query,
+
+            includedRegionCodes:
+                [
+                    "br"
+                ],
+
+            language:
+                "pt-BR",
+
+            sessionToken:
+                businessSessionToken
+
+        };
+
+
+        /*
+            Usa a cidade selecionada
+            para priorizar resultados próximos.
+        */
+
+        if (
+            selectedCity.lat &&
+            selectedCity.lon
+        ) {
+
+            request.locationBias = {
+
+                center: {
+
+                    lat:
+                        Number(
+                            selectedCity.lat
+                        ),
+
+                    lng:
+                        Number(
+                            selectedCity.lon
+                        )
+
+                },
+
+                radius:
+                    40000
+
+            };
+
+        }
+
+
+        const response =
+            await placesAutocompleteSuggestion
+                .fetchAutocompleteSuggestions(
+                    request
+                );
+
+
+        const suggestions =
+            response.suggestions ||
+            [];
+
+
+        console.log(
+            "Google Places sugestões:",
+            suggestions
+        );
+
+
+        renderBusinessSuggestions(
+            suggestions
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erro ao buscar empresas:",
+            error
+        );
+
+
+        renderBusinessMessage(
+            "Não foi possível buscar estabelecimentos agora."
+        );
+
+    }
+
+    finally {
+
+        setBusinessLoading(
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDERIZAR EMPRESAS
+========================================================= */
+
+function renderBusinessSuggestions(
+    suggestions
+) {
+
+    const container =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    const validSuggestions =
+        suggestions.filter(
+            function (suggestion) {
+
+                return Boolean(
+                    suggestion.placePrediction
+                );
+
+            }
+        );
+
+
+    if (
+        !validSuggestions.length
+    ) {
+
+        renderBusinessMessage(
+            "Nenhum estabelecimento encontrado."
+        );
+
+        return;
+
+    }
+
+
+    validSuggestions
+        .slice(
+            0,
+            5
+        )
+        .forEach(
+            function (suggestion) {
+
+                const prediction =
+                    suggestion.placePrediction;
+
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.type =
+                    "button";
+
+
+                button.className =
+                    "place-suggestion";
+
+
+                const icon =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                icon.className =
+                    "place-suggestion-icon";
+
+
+                icon.textContent =
+                    "◎";
+
+
+                const copy =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                copy.className =
+                    "place-suggestion-copy";
+
+
+                const title =
+                    document.createElement(
+                        "strong"
+                    );
+
+
+                title.textContent =
+                    prediction
+                        .mainText
+                        ?.text ||
+                    prediction.text?.text ||
+                    "Estabelecimento";
+
+
+                const subtitle =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                subtitle.textContent =
+                    prediction
+                        .secondaryText
+                        ?.text ||
+                    "";
+
+
+                copy.appendChild(
+                    title
+                );
+
+
+                copy.appendChild(
+                    subtitle
+                );
+
+
+                button.appendChild(
+                    icon
+                );
+
+
+                button.appendChild(
+                    copy
+                );
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        selectBusiness(
+                            prediction
+                        );
+
+                    }
+                );
+
+
+                container.appendChild(
+                    button
+                );
+
+            }
+        );
+
+
+    container.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================================
+   SELECIONAR EMPRESA
+========================================================= */
+
+async function selectBusiness(
+    prediction
+) {
+
+    setBusinessLoading(
+        true
+    );
+
+
+    try {
+
+        const place =
+            prediction.toPlace();
+
+
+        await place.fetchFields({
+
+            fields: [
+
+                "id",
+
+                "displayName",
+
+                "formattedAddress",
+
+                "location",
+
+                "rating",
+
+                "userRatingCount",
+
+                "primaryTypeDisplayName"
+
+            ]
+
+        });
+
+
+        const lat =
+            place.location
+                ? place.location.lat()
+                : "";
+
+
+        const lon =
+            place.location
+                ? place.location.lng()
+                : "";
+
+
+        selectedBusiness = {
+
+            placeId:
+                place.id ||
+                "",
+
+            name:
+                place.displayName ||
+                "",
+
+            address:
+                place.formattedAddress ||
+                "",
+
+            lat,
+
+            lon,
+
+            rating:
+                place.rating ??
+                "",
+
+            ratingCount:
+                place.userRatingCount ??
+                "",
+
+            type:
+                place.primaryTypeDisplayName ||
+                ""
+
+        };
+
+
+        fillBusinessFields();
+
+
+        renderSelectedBusiness();
+
+
+        hideBusinessSuggestions();
+
+
+        /*
+            Nova sessão para próxima busca.
+        */
+
+        createBusinessSessionToken();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erro ao carregar estabelecimento:",
+            error
+        );
+
+
+        renderBusinessMessage(
+            "Não foi possível carregar os dados deste estabelecimento."
+        );
+
+    }
+
+    finally {
+
+        setBusinessLoading(
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PREENCHER DADOS
+========================================================= */
+
+function fillBusinessFields() {
+
+    if (
+        !selectedBusiness
+    ) {
+
+        return;
+
+    }
+
+
+    setInputValue(
+        "businessPlaceId",
+        selectedBusiness.placeId
+    );
+
+
+    setInputValue(
+        "businessName",
+        selectedBusiness.name
+    );
+
+
+    setInputValue(
+        "businessAddress",
+        selectedBusiness.address
+    );
+
+
+    setInputValue(
+        "businessLat",
+        selectedBusiness.lat
+    );
+
+
+    setInputValue(
+        "businessLon",
+        selectedBusiness.lon
+    );
+
+
+    setInputValue(
+        "businessRating",
+        selectedBusiness.rating
+    );
+
+
+    setInputValue(
+        "businessRatingCount",
+        selectedBusiness.ratingCount
+    );
+
+
+    setInputValue(
+        "businessType",
+        selectedBusiness.type
+    );
+
+
+    /*
+        Preenche segmento automaticamente
+        quando o Google retornar categoria.
+    */
+
+    const segmentInput =
+        document.getElementById(
+            "segment"
+        );
+
+
+    if (
+        segmentInput &&
+        selectedBusiness.type &&
+        !segmentInput.value.trim()
+    ) {
+
+        segmentInput.value =
+            selectedBusiness.type;
+
+    }
+
+}
+
+
+/* =========================================================
+   CARD DA EMPRESA
+========================================================= */
+
+function renderSelectedBusiness() {
+
+    if (
+        !selectedBusiness
+    ) {
+
+        return;
+
+    }
+
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    const card =
+        document.getElementById(
+            "selectedBusinessCard"
+        );
+
+
+    const name =
+        document.getElementById(
+            "selectedBusinessName"
+        );
+
+
+    const address =
+        document.getElementById(
+            "selectedBusinessAddress"
+        );
+
+
+    const meta =
+        document.getElementById(
+            "selectedBusinessMeta"
+        );
+
+
+    if (
+        name
+    ) {
+
+        name.textContent =
+            selectedBusiness.name;
+
+    }
+
+
+    if (
+        address
+    ) {
+
+        address.textContent =
+            selectedBusiness.address;
+
+    }
+
+
+    if (
+        meta
+    ) {
+
+        const parts =
+            [];
+
+
+        if (
+            selectedBusiness.rating
+        ) {
+
+            parts.push(
+                `★ ${selectedBusiness.rating}`
+            );
+
+        }
+
+
+        if (
+            selectedBusiness.ratingCount !== ""
+        ) {
+
+            parts.push(
+                `${selectedBusiness.ratingCount} avaliações`
+            );
+
+        }
+
+
+        if (
+            selectedBusiness.type
+        ) {
+
+            parts.push(
+                selectedBusiness.type
+            );
+
+        }
+
+
+        meta.textContent =
+            parts.join(
+                " · "
+            );
+
+    }
+
+
+    if (
+        input
+    ) {
+
+        input.value =
+            selectedBusiness.name;
+
+
+        input
+            .closest(
+                ".place-search-wrapper"
+            )
+            ?.classList
+            .add(
+                "hidden"
+            );
+
+    }
+
+
+    if (
+        card
+    ) {
+
+        card.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ALTERAR EMPRESA
+========================================================= */
+
+function clearSelectedBusiness() {
+
+    selectedBusiness =
+        null;
+
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    const card =
+        document.getElementById(
+            "selectedBusinessCard"
+        );
+
+
+    if (
+        input
+    ) {
+
+        input.value =
+            "";
+
+
+        input
+            .closest(
+                ".place-search-wrapper"
+            )
+            ?.classList
+            .remove(
+                "hidden"
+            );
+
+    }
+
+
+    if (
+        card
+    ) {
+
+        card.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    [
+        "businessPlaceId",
+        "businessName",
+        "businessAddress",
+        "businessLat",
+        "businessLon",
+        "businessRating",
+        "businessRatingCount",
+        "businessType"
+    ]
+        .forEach(
+            function (id) {
+
+                setInputValue(
+                    id,
+                    ""
+                );
+
+            }
+        );
+
+
+    createBusinessSessionToken();
+
+}
+
+
+/* =========================================================
+   HELPERS EMPRESA
+========================================================= */
+
+function hideBusinessSuggestions() {
+
+    const container =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (
+        container
+    ) {
+
+        container.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+function setBusinessLoading(
+    loading
+) {
+
+    const loader =
+        document.getElementById(
+            "businessSearchLoader"
+        );
+
+
+    if (!loader) {
+        return;
+    }
+
+
+    loader.classList.toggle(
+        "hidden",
+        !loading
+    );
+
+}
+
+
+function renderBusinessMessage(
+    message
+) {
+
+    const container =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.style.padding =
+        "15px 16px";
+
+
+    item.style.fontSize =
+        ".72rem";
+
+
+    item.style.color =
+        "#7d8898";
+
+
+    item.textContent =
+        message;
+
+
+    container.appendChild(
+        item
+    );
+
+
+    container.classList.remove(
+        "hidden"
+    );
 
 }
 
