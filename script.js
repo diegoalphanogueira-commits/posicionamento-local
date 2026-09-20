@@ -493,30 +493,15 @@ async function searchCities(
         );
 
 
-        /*
-            Queremos especificamente
-            cidades.
-        */
-
         url.searchParams.set(
             "type",
             "city"
         );
 
 
-        /*
-            Somente Brasil.
-        */
-
         url.searchParams.set(
             "filter",
             "countrycode:br"
-        );
-
-
-        url.searchParams.set(
-            "format",
-            "json"
         );
 
 
@@ -543,8 +528,7 @@ async function searchCities(
                 url.toString(),
                 {
                     signal:
-                        cityAbortController
-                            .signal
+                        cityAbortController.signal
                 }
             );
 
@@ -565,12 +549,85 @@ async function searchCities(
             await response.json();
 
 
-        const results =
+        console.log(
+            "Resposta Geoapify:",
+            payload
+        );
+
+
+        let results = [];
+
+
+        /*
+            Geoapify pode devolver:
+
+            1. results[]
+            2. features[] em GeoJSON
+        */
+
+        if (
             Array.isArray(
                 payload.results
             )
-                ? payload.results
-                : [];
+        ) {
+
+            results =
+                payload.results;
+
+        }
+
+        else if (
+            Array.isArray(
+                payload.features
+            )
+        ) {
+
+            results =
+                payload.features.map(
+                    function (feature) {
+
+                        const properties =
+                            feature.properties ||
+                            {};
+
+
+                        /*
+                            Em alguns formatos,
+                            latitude/longitude ficam
+                            em geometry.coordinates.
+                        */
+
+                        if (
+                            feature.geometry &&
+                            Array.isArray(
+                                feature.geometry.coordinates
+                            )
+                        ) {
+
+                            properties.lon =
+                                properties.lon ??
+                                feature.geometry.coordinates[0];
+
+
+                            properties.lat =
+                                properties.lat ??
+                                feature.geometry.coordinates[1];
+
+                        }
+
+
+                        return properties;
+
+                    }
+                );
+
+        }
+
+
+        console.log(
+            "Cidades encontradas:",
+            results
+        );
 
 
         renderCitySuggestions(
