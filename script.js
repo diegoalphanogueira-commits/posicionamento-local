@@ -10,7 +10,7 @@
 ========================================================= */
 
 const GEOAPIFY_API_KEY =
-    "COLE_SUA_CHAVE_AQUI";
+    "61752d18dba9485784b870f8d4e38b17";
 
 
 const RADAR_LOCAL_URL =
