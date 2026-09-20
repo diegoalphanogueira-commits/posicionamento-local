@@ -1614,14 +1614,36 @@
     >
 
 
-   <!-- =====================================================
-     2. EMPRESA OU ENDEREÇO
+<!-- =====================================================
+     2. NOME DA EMPRESA
+====================================================== -->
+
+<div class="field">
+
+    <label for="company">
+        Nome da empresa
+    </label>
+
+    <input
+        type="text"
+        id="company"
+        name="company"
+        placeholder="Ex.: Pensol Seguros"
+        autocomplete="organization"
+        required
+    >
+
+</div>
+
+
+<!-- =====================================================
+     3. ENDEREÇO
 ====================================================== -->
 
 <div class="field business-search-field">
 
     <label for="businessQuery">
-        Nome da empresa ou endereço
+        Endereço da empresa
     </label>
 
 
@@ -1635,7 +1657,7 @@
             type="text"
             id="businessQuery"
             name="businessQuery"
-            placeholder="Ex.: Pensol Seguros ou Rua X, 123"
+            placeholder="Digite rua, número ou endereço"
             autocomplete="off"
             required
         >
@@ -1648,7 +1670,7 @@
     </div>
 
 
-    <!-- SUGESTÕES DO GOOGLE -->
+    <!-- SUGESTÕES DO ENDEREÇO -->
 
     <div
         id="businessSuggestions"
@@ -1656,7 +1678,7 @@
     ></div>
 
 
-    <!-- EMPRESA SELECIONADA -->
+    <!-- ENDEREÇO SELECIONADO -->
 
     <div
         id="selectedBusinessCard"
@@ -1671,7 +1693,7 @@
         <div class="selected-place-copy">
 
             <span>
-                EMPRESA IDENTIFICADA
+                LOCAL IDENTIFICADO
             </span>
 
             <strong id="selectedBusinessName">
@@ -1700,13 +1722,11 @@
 
 
     <small class="form-helper">
-        Busque pelo nome da empresa ou pelo endereço.
+        Selecione o endereço correto para identificarmos a localização do negócio.
     </small>
 
 
-    <!-- =====================================================
-         DADOS REAIS DO GOOGLE PLACES
-    ====================================================== -->
+    <!-- DADOS DO ENDEREÇO -->
 
     <input
         type="hidden"
@@ -1757,7 +1777,6 @@
     >
 
 </div>
-
 
     <!-- =====================================================
          3. SEGMENTO
