@@ -4,7 +4,7 @@
 <head>
 
     <!-- =====================================================
-         CONFIGURAÇÕES BÁSICAS
+         META
     ====================================================== -->
 
     <meta charset="UTF-8">
@@ -15,12 +15,12 @@
     >
 
     <title>
-        Posicionamento Local | Apareça no Google e Ganhe Relevância na Sua Região
+        Posicionamento Local | Seja Encontrado na Sua Região
     </title>
 
     <meta
         name="description"
-        content="Estruture sua presença local com Google, SEO, site profissional e estratégia de avaliações para aumentar sua visibilidade, autoridade e oportunidades na sua região."
+        content="Estruture sua presença local com Google, SEO local, site profissional e estratégia de avaliações para aumentar sua visibilidade, autoridade e oportunidades."
     >
 
     <meta
@@ -28,7 +28,6 @@
         content="index, follow"
     >
 
-    <!-- TROCAREMOS DEPOIS PELO DOMÍNIO FINAL -->
     <link
         rel="canonical"
         href="https://seudominio.com.br/"
@@ -51,17 +50,17 @@
 
     <meta
         property="og:description"
-        content="Google, SEO local, site profissional e avaliações trabalhando juntos para fortalecer a presença da sua empresa."
-    >
-
-    <meta
-        property="og:url"
-        content="https://seudominio.com.br/"
+        content="Google, site profissional e avaliações trabalhando juntos para fortalecer a presença da sua empresa na região."
     >
 
     <meta
         property="og:image"
         content="https://seudominio.com.br/assets/images/og-cover.jpg"
+    >
+
+    <meta
+        property="og:url"
+        content="https://seudominio.com.br/"
     >
 
 
@@ -71,13 +70,13 @@
 
     <link
         rel="icon"
-        href="assets/logos/favicon.png"
         type="image/png"
+        href="assets/logos/favicon.png"
     >
 
 
     <!-- =====================================================
-         FONTE
+         FONT
     ====================================================== -->
 
     <link
@@ -106,22 +105,6 @@
         href="style.css"
     >
 
-
-    <!-- =====================================================
-         SCHEMA
-    ====================================================== -->
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ProfessionalService",
-        "name": "Posicionamento Local - Diego Nogueira",
-        "description": "Estruturação de presença local com Google, SEO, site profissional e estratégia de avaliações.",
-        "areaServed": "Brasil",
-        "url": "https://seudominio.com.br/"
-    }
-    </script>
-
 </head>
 
 
@@ -143,7 +126,6 @@
             <a
                 href="#topo"
                 class="brand"
-                aria-label="Diego Nogueira - Posicionamento Local"
             >
 
                 <div class="brand-symbol">
@@ -169,19 +151,23 @@
 
             <nav
                 class="desktop-nav"
-                aria-label="Menu principal"
+                aria-label="Navegação principal"
             >
 
                 <a href="#problema">
-                    Por que isso importa
+                    O problema
                 </a>
 
                 <a href="#estrutura">
-                    O que fazemos
+                    A solução
                 </a>
 
-                <a href="#como-funciona">
-                    Como funciona
+                <a href="#radar">
+                    Radar Local
+                </a>
+
+                <a href="#cases">
+                    Cases
                 </a>
 
                 <a href="#sobre">
@@ -202,6 +188,7 @@
 
 
             <button
+                type="button"
                 class="mobile-menu-button"
                 id="mobileMenuButton"
                 aria-label="Abrir menu"
@@ -221,19 +208,22 @@
         <nav
             class="mobile-menu"
             id="mobileMenu"
-            aria-label="Menu mobile"
         >
 
             <a href="#problema">
-                Por que isso importa
+                O problema
             </a>
 
             <a href="#estrutura">
-                O que fazemos
+                A solução
             </a>
 
-            <a href="#como-funciona">
-                Como funciona
+            <a href="#radar">
+                Radar Local
+            </a>
+
+            <a href="#cases">
+                Cases
             </a>
 
             <a href="#sobre">
@@ -271,7 +261,7 @@
 
                         <span class="hero-badge-dot"></span>
 
-                        Posicionamento Local para pequenas e médias empresas
+                        Posicionamento Local
 
                     </div>
 
@@ -279,6 +269,7 @@
                     <h1>
 
                         Tem gente procurando pelo seu serviço
+
                         <span>
                             na sua região agora.
                         </span>
@@ -289,6 +280,7 @@
                     <p class="hero-question">
 
                         A pergunta é:
+
                         <strong>
                             sua empresa está aparecendo para essas pessoas?
                         </strong>
@@ -298,13 +290,13 @@
 
                     <p class="hero-description">
 
-                        Estruturamos sua presença no Google,
-                        seu site e sua reputação digital para aumentar
-                        sua visibilidade, transmitir mais confiança
-                        e facilitar que novos clientes encontrem
-                        e entrem em contato com sua empresa.
+                        Estruturamos Google, SEO local,
+                        site profissional e reputação digital
+                        para ajudar sua empresa a ser encontrada,
+                        transmitir confiança e gerar novas oportunidades.
 
                     </p>
+
 
 
                     <div class="hero-actions">
@@ -313,7 +305,7 @@
                             href="#diagnostico"
                             class="button button-primary"
                         >
-                            Quero analisar minha presença local
+                            Analisar minha presença local
                         </a>
 
 
@@ -321,44 +313,49 @@
                             href="#estrutura"
                             class="button button-secondary"
                         >
-                            Ver como funciona
+                            Entender como funciona
                         </a>
 
                     </div>
 
 
-                    <div class="hero-proof">
+
+                    <div class="hero-microproof">
+
 
                         <div>
-                            <strong>
-                                Google
-                            </strong>
 
-                            <span>
-                                Seja encontrado
-                            </span>
+                            <span class="dot dot-blue"></span>
+
+                            Google
+
                         </div>
 
 
                         <div>
-                            <strong>
-                                Site
-                            </strong>
 
-                            <span>
-                                Transmita confiança
-                            </span>
+                            <span class="dot dot-green"></span>
+
+                            Site
+
                         </div>
 
 
                         <div>
-                            <strong>
-                                Avaliações
-                            </strong>
 
-                            <span>
-                                Construa reputação
-                            </span>
+                            <span class="dot dot-yellow"></span>
+
+                            Avaliações
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="dot dot-red"></span>
+
+                            SEO local
+
                         </div>
 
                     </div>
@@ -367,155 +364,55 @@
 
 
 
-                <!-- VISUAL HERO -->
+                <!-- IMAGEM HERO -->
 
-                <div class="hero-visual">
+                <div class="hero-media">
 
 
-                    <div class="local-search-panel">
+                    <div class="hero-media-glow"></div>
 
 
-                        <div class="search-panel-top">
+                    <img
+                        src="assets/images/hero-posicionamento-local.webp"
+                        alt="Ecossistema de posicionamento local com Google, avaliações, site e WhatsApp"
+                    >
 
-                            <span>
-                                PESQUISA LOCAL
-                            </span>
 
-                            <strong>
-                                O que seu cliente encontra?
-                            </strong>
+                    <div class="floating-badge floating-badge-search">
 
-                        </div>
+                        <span>
+                            BUSCA LOCAL
+                        </span>
 
+                        <strong>
+                            Pessoas procurando agora
+                        </strong>
 
+                    </div>
 
-                        <div class="search-bar-fake">
 
-                            <span class="search-icon">
-                                G
-                            </span>
+                    <div class="floating-badge floating-badge-rating">
 
-                            <span>
-                                serviço perto de mim
-                            </span>
+                        <span class="stars">
+                            ★★★★★
+                        </span>
 
-                        </div>
+                        <strong>
+                            Reputação
+                        </strong>
 
+                    </div>
 
 
-                        <div class="search-results">
+                    <div class="floating-badge floating-badge-site">
 
+                        <span>
+                            SITE
+                        </span>
 
-                            <article class="search-result search-result-highlight">
-
-
-                                <div class="result-header">
-
-                                    <div class="result-logo">
-                                        SUA
-                                    </div>
-
-
-                                    <div>
-
-                                        <span class="result-label">
-                                            SUA EMPRESA
-                                        </span>
-
-                                        <strong>
-                                            Empresa bem posicionada
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-
-
-                                <div class="result-rating">
-
-                                    <span>
-                                        ★★★★★
-                                    </span>
-
-                                    <small>
-                                        Avaliações e reputação
-                                    </small>
-
-                                </div>
-
-
-                                <div class="result-info">
-
-                                    <span>
-                                        ✓ Serviços bem definidos
-                                    </span>
-
-                                    <span>
-                                        ✓ Região atendida
-                                    </span>
-
-                                    <span>
-                                        ✓ Site profissional
-                                    </span>
-
-                                </div>
-
-
-                                <div class="result-action">
-
-                                    <span>
-                                        Ver empresa
-                                    </span>
-
-                                    <strong>
-                                        →
-                                    </strong>
-
-                                </div>
-
-                            </article>
-
-
-
-                            <article class="search-result search-result-muted">
-
-                                <div class="result-placeholder"></div>
-
-                                <div>
-
-                                    <strong>
-                                        Concorrente
-                                    </strong>
-
-                                    <span>
-                                        Presença básica
-                                    </span>
-
-                                </div>
-
-                            </article>
-
-
-                            <article class="search-result search-result-muted">
-
-                                <div class="result-placeholder"></div>
-
-                                <div>
-
-                                    <strong>
-                                        Concorrente
-                                    </strong>
-
-                                    <span>
-                                        Poucas informações
-                                    </span>
-
-                                </div>
-
-                            </article>
-
-                        </div>
+                        <strong>
+                            Presença profissional
+                        </strong>
 
                     </div>
 
@@ -528,148 +425,147 @@
 
 
         <!-- =====================================================
-             COMPORTAMENTO DO CLIENTE
+             JORNADA DO CLIENTE
         ====================================================== -->
 
-        <section class="section behavior-section">
+        <section class="section journey-section">
 
-            <div class="container">
+            <div class="container journey-layout">
 
 
-                <div class="section-heading centered">
+                <!-- IMAGEM -->
+
+                <div class="journey-media">
+
+                    <div class="image-frame image-frame-large">
+
+                        <img
+                            src="assets/images/jornada-busca-local.webp"
+                            alt="Jornada de pesquisa de um cliente procurando uma empresa local"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CONTEÚDO -->
+
+                <div class="journey-content">
 
 
                     <span class="eyebrow">
-                        Pense no seu próprio comportamento
+                        Antes do primeiro contato
                     </span>
 
 
                     <h2>
-                        Quando você precisa de um serviço,
-                        onde você procura?
+                        Seu cliente já começou a formar uma opinião sobre sua empresa.
                     </h2>
 
 
                     <p>
 
-                        Hoje, antes de ligar para uma empresa,
-                        as pessoas pesquisam, comparam,
-                        olham avaliações e tentam entender
-                        em quem podem confiar.
+                        Antes de mandar uma mensagem,
+                        ele pesquisa, compara e tenta descobrir
+                        qual empresa parece mais confiável.
 
                     </p>
 
-                </div>
+
+
+                    <div class="journey-list">
+
+
+                        <article>
+
+                            <span class="journey-number journey-blue">
+                                01
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Ele pesquisa
+                                </strong>
+
+                                <p>
+                                    Procura no Google o serviço que precisa.
+                                </p>
+
+                            </div>
+
+                        </article>
 
 
 
-                <div class="journey">
+                        <article>
+
+                            <span class="journey-number journey-red">
+                                02
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Ele compara
+                                </strong>
+
+                                <p>
+                                    Analisa empresas e opções próximas.
+                                </p>
+
+                            </div>
+
+                        </article>
 
 
-                    <div class="journey-item">
 
-                        <span class="journey-number">
-                            01
-                        </span>
+                        <article>
 
+                            <span class="journey-number journey-yellow">
+                                03
+                            </span>
 
-                        <strong>
-                            Pesquisa
-                        </strong>
+                            <div>
 
+                                <strong>
+                                    Ele busca confiança
+                                </strong>
 
-                        <p>
-                            O cliente procura no Google.
-                        </p>
+                                <p>
+                                    Avaliações, fotos, site e informações.
+                                </p>
 
-                    </div>
+                            </div>
 
-
-                    <span class="journey-arrow">
-                        →
-                    </span>
+                        </article>
 
 
-                    <div class="journey-item">
 
-                        <span class="journey-number">
-                            02
-                        </span>
+                        <article>
 
+                            <span class="journey-number journey-green">
+                                04
+                            </span>
 
-                        <strong>
-                            Compara
-                        </strong>
+                            <div>
 
+                                <strong>
+                                    Ele escolhe
+                                </strong>
 
-                        <p>
-                            Observa empresas da região.
-                        </p>
+                                <p>
+                                    Entra em contato com quem transmite mais segurança.
+                                </p>
 
-                    </div>
+                            </div>
 
-
-                    <span class="journey-arrow">
-                        →
-                    </span>
-
-
-                    <div class="journey-item">
-
-                        <span class="journey-number">
-                            03
-                        </span>
-
-
-                        <strong>
-                            Confere
-                        </strong>
-
-
-                        <p>
-                            Olha fotos, avaliações e site.
-                        </p>
-
-                    </div>
-
-
-                    <span class="journey-arrow">
-                        →
-                    </span>
-
-
-                    <div class="journey-item">
-
-                        <span class="journey-number">
-                            04
-                        </span>
-
-
-                        <strong>
-                            Escolhe
-                        </strong>
-
-
-                        <p>
-                            Entra em contato com quem passa mais confiança.
-                        </p>
+                        </article>
 
                     </div>
-
-                </div>
-
-
-
-                <div class="behavior-question">
-
-                    <span>
-                        Agora pensa:
-                    </span>
-
-                    <strong>
-                        quando alguém procura pelo que você vende,
-                        o que encontra sobre sua empresa?
-                    </strong>
 
                 </div>
 
@@ -688,23 +584,25 @@
             id="problema"
         >
 
-            <div class="container problem-container">
+            <div class="container problem-layout">
 
 
-                <div class="problem-copy">
+                <!-- COPY -->
+
+                <div class="problem-content">
 
 
                     <span class="eyebrow">
-                        O problema nem sempre é falta de cliente
+                        Existe procura
                     </span>
 
 
                     <h2>
 
-                        Às vezes o cliente está procurando.
+                        Às vezes o problema não é falta de cliente.
 
                         <span>
-                            Só está encontrando outra empresa.
+                            É quem aparece quando ele procura.
                         </span>
 
                     </h2>
@@ -712,128 +610,53 @@
 
                     <p>
 
-                        Duas empresas podem entregar um serviço parecido.
-
-                        Mas aquela que aparece melhor posicionada,
-                        possui boas avaliações, informações completas
-                        e uma presença profissional tende a transmitir
-                        mais segurança antes mesmo da primeira conversa.
+                        Se o seu Google está incompleto,
+                        possui poucas avaliações,
+                        informações ruins ou nenhum site,
+                        a percepção da sua empresa começa em desvantagem.
 
                     </p>
 
 
-                    <p class="problem-highlight">
+                    <blockquote>
 
-                        Muitas vezes o seu concorrente não é melhor.
+                        Seu concorrente não precisa necessariamente
+                        ser melhor.
 
-                        Ele simplesmente está mais preparado
+                        Ele pode simplesmente estar mais preparado
                         para ser encontrado e escolhido.
 
-                    </p>
+                    </blockquote>
 
                 </div>
 
 
 
-                <div class="problem-flow">
+                <!-- IMAGEM -->
+
+                <div class="problem-media">
 
 
-                    <div class="problem-step">
+                    <div class="image-frame">
 
-                        <span>
-                            01
-                        </span>
-
-
-                        <div>
-
-                            <strong>
-                                Sua empresa aparece pouco
-                            </strong>
-
-                            <p>
-                                O cliente pesquisa e encontra concorrentes primeiro.
-                            </p>
-
-                        </div>
+                        <img
+                            src="assets/images/presenca-local-fraca.webp"
+                            alt="Exemplo de presença digital local pouco estruturada"
+                            loading="lazy"
+                        >
 
                     </div>
 
 
-                    <div class="problem-line"></div>
-
-
-                    <div class="problem-step">
+                    <div class="problem-label">
 
                         <span>
-                            02
+                            PRESENÇA DIGITAL
                         </span>
 
-
-                        <div>
-
-                            <strong>
-                                A presença não transmite confiança
-                            </strong>
-
-                            <p>
-                                Perfil incompleto, poucas fotos,
-                                avaliações ou informações.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="problem-line"></div>
-
-
-                    <div class="problem-step">
-
-                        <span>
-                            03
-                        </span>
-
-
-                        <div>
-
-                            <strong>
-                                Não existe um ambiente próprio
-                            </strong>
-
-                            <p>
-                                Sem site, o cliente tem menos informação
-                                para tomar uma decisão.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="problem-line"></div>
-
-
-                    <div class="problem-step">
-
-                        <span>
-                            04
-                        </span>
-
-
-                        <div>
-
-                            <strong>
-                                O concorrente ganha a oportunidade
-                            </strong>
-
-                            <p>
-                                Mesmo que sua empresa pudesse atender
-                                aquele cliente perfeitamente.
-                            </p>
-
-                        </div>
+                        <strong>
+                            O que o cliente vê importa.
+                        </strong>
 
                     </div>
 
@@ -846,29 +669,25 @@
 
 
         <!-- =====================================================
-             TRANSIÇÃO
+             VIRADA
         ====================================================== -->
 
-        <section class="transition-section">
+        <section class="statement-section">
 
-            <div class="container transition-container">
-
+            <div class="container statement-container">
 
                 <span>
-                    A solução não é simplesmente “estar no Google”
+                    Não são serviços separados.
                 </span>
 
-
                 <h2>
-                    É construir presença.
+                    É uma estrutura de posicionamento local.
                 </h2>
-
 
                 <p>
 
-                    Google, site e reputação precisam trabalhar juntos
-                    para ajudar sua empresa a ser encontrada,
-                    transmitir autoridade e facilitar o contato.
+                    Google, site e reputação trabalhando juntos
+                    para aumentar sua presença e sua autoridade na região.
 
                 </p>
 
@@ -879,521 +698,320 @@
 
 
         <!-- =====================================================
-             ESTRUTURA DA OFERTA
+             GOOGLE
         ====================================================== -->
 
         <section
-            class="section structure-section"
+            class="section solution-section"
             id="estrutura"
         >
 
-            <div class="container">
+            <div class="container solution-layout">
 
 
-                <div class="section-heading">
+                <!-- COPY -->
+
+                <div class="solution-content">
+
+
+                    <div class="solution-index solution-index-blue">
+                        01
+                    </div>
 
 
                     <span class="eyebrow">
-                        Posicionamento Local
+                        Google + SEO local
                     </span>
 
 
                     <h2>
-                        Três estruturas trabalhando juntas.
+                        Apareça onde a decisão começa.
                     </h2>
 
 
                     <p>
 
-                        Não vendemos somente um site,
-                        uma configuração de Google
-                        ou uma plaquinha de avaliação.
-
-                        Estruturamos os três pontos para se fortalecerem.
+                        Estruturamos o Perfil da Empresa
+                        para que o Google tenha informações mais completas
+                        sobre o que sua empresa faz e onde ela atende.
 
                     </p>
 
-                </div>
 
 
-
-                <div class="structure-blocks">
-
-
-                    <!-- GOOGLE -->
-
-                    <article class="structure-block">
-
-
-                        <div class="structure-number">
-                            01
-                        </div>
-
-
-                        <div class="structure-title">
-
-                            <span>
-                                GOOGLE + SEO LOCAL
-                            </span>
-
-
-                            <h3>
-                                Seja encontrado.
-                            </h3>
-
-                        </div>
-
-
-                        <div class="structure-content">
-
-
-                            <p>
-
-                                Estruturamos o Perfil da Empresa
-                                e os principais pontos que ajudam
-                                sua presença local a ficar mais completa
-                                e relevante.
-
-                            </p>
-
-
-                            <ul>
-
-                                <li>
-                                    Configuração e otimização do perfil
-                                </li>
-
-                                <li>
-                                    Categorias estratégicas
-                                </li>
-
-                                <li>
-                                    Principais serviços
-                                </li>
-
-                                <li>
-                                    Áreas e regiões atendidas
-                                </li>
-
-                                <li>
-                                    Fotos e informações da empresa
-                                </li>
-
-                                <li>
-                                    Estratégia de SEO local
-                                </li>
-
-                                <li>
-                                    Conteúdo e postagens
-                                </li>
-
-                            </ul>
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- SITE -->
-
-                    <article class="structure-block">
-
-
-                        <div class="structure-number">
-                            02
-                        </div>
-
-
-                        <div class="structure-title">
-
-                            <span>
-                                SITE PROFISSIONAL
-                            </span>
-
-
-                            <h3>
-                                Transmita confiança.
-                            </h3>
-
-                        </div>
-
-
-                        <div class="structure-content">
-
-
-                            <p>
-
-                                Criamos um ambiente profissional
-                                conectado à estratégia de posicionamento
-                                para apresentar sua empresa,
-                                serviços e diferenciais.
-
-                            </p>
-
-
-                            <ul>
-
-                                <li>
-                                    Design profissional e responsivo
-                                </li>
-
-                                <li>
-                                    Principais serviços
-                                </li>
-
-                                <li>
-                                    Regiões atendidas
-                                </li>
-
-                                <li>
-                                    Botões estratégicos para WhatsApp
-                                </li>
-
-                                <li>
-                                    Estrutura para SEO
-                                </li>
-
-                                <li>
-                                    Integração com Google
-                                </li>
-
-                                <li>
-                                    Mais autoridade para sua marca
-                                </li>
-
-                            </ul>
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- REPUTAÇÃO -->
-
-                    <article class="structure-block">
-
-
-                        <div class="structure-number">
-                            03
-                        </div>
-
-
-                        <div class="structure-title">
-
-                            <span>
-                                REPUTAÇÃO + AVALIAÇÕES
-                            </span>
-
-
-                            <h3>
-                                Construa autoridade.
-                            </h3>
-
-                        </div>
-
-
-                        <div class="structure-content">
-
-
-                            <p>
-
-                                Criamos uma estratégia para facilitar
-                                que clientes satisfeitos avaliem sua empresa
-                                e ajudem a fortalecer sua reputação digital.
-
-                            </p>
-
-
-                            <ul>
-
-                                <li>
-                                    Plaquinha inteligente
-                                </li>
-
-                                <li>
-                                    Tecnologia NFC
-                                </li>
-
-                                <li>
-                                    QR Code
-                                </li>
-
-                                <li>
-                                    Link direto para avaliação
-                                </li>
-
-                                <li>
-                                    Processo simples para o cliente
-                                </li>
-
-                                <li>
-                                    Estratégia contínua de reputação
-                                </li>
-
-                            </ul>
-
-                        </div>
-
-                    </article>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             ECOSSISTEMA VISUAL
-        ====================================================== -->
-
-        <section class="section ecosystem-section">
-
-            <div class="container">
-
-
-                <div class="section-heading centered">
-
-
-                    <span class="eyebrow">
-                        Quando tudo trabalha junto
-                    </span>
-
-
-                    <h2>
-                        A jornada fica muito mais forte.
-                    </h2>
-
-                </div>
-
-
-
-                <div class="local-ecosystem">
-
-
-                    <div class="ecosystem-node">
-
-                        <span>
-                            PESQUISA
-                        </span>
-
-                        <strong>
-                            Cliente procura
-                        </strong>
-
-                        <small>
-                            “serviço perto de mim”
-                        </small>
-
-                    </div>
-
-
-                    <div class="ecosystem-connector">
-                        →
-                    </div>
-
-
-                    <div class="ecosystem-node ecosystem-node-green">
-
-                        <span>
-                            GOOGLE
-                        </span>
-
-                        <strong>
-                            Sua empresa aparece
-                        </strong>
-
-                        <small>
-                            Perfil estruturado
-                        </small>
-
-                    </div>
-
-
-                    <div class="ecosystem-connector">
-                        →
-                    </div>
-
-
-                    <div class="ecosystem-node">
-
-                        <span>
-                            REPUTAÇÃO
-                        </span>
-
-                        <strong>
-                            Avaliações geram confiança
-                        </strong>
-
-                        <small>
-                            Prova social
-                        </small>
-
-                    </div>
-
-
-                    <div class="ecosystem-connector">
-                        →
-                    </div>
-
-
-                    <div class="ecosystem-node">
-
-                        <span>
-                            SITE
-                        </span>
-
-                        <strong>
-                            Cliente entende sua empresa
-                        </strong>
-
-                        <small>
-                            Serviços + autoridade
-                        </small>
-
-                    </div>
-
-
-                    <div class="ecosystem-connector">
-                        →
-                    </div>
-
-
-                    <div class="ecosystem-node ecosystem-node-result">
-
-                        <span>
-                            CONTATO
-                        </span>
-
-                        <strong>
-                            Nova oportunidade
-                        </strong>
-
-                        <small>
-                            WhatsApp / ligação
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             PLAQUINHA NFC
-        ====================================================== -->
-
-        <section class="section review-section">
-
-            <div class="container review-container">
-
-
-                <div class="review-visual">
-
-
-                    <div class="nfc-card">
-
-
-                        <div class="nfc-card-top">
-
-                            <span>
-                                AVALIE NOSSA EMPRESA
-                            </span>
-
-                            <div class="stars">
-                                ★★★★★
-                            </div>
-
-                        </div>
-
-
-                        <div class="nfc-symbol">
-
-                            <div class="nfc-wave wave-1"></div>
-
-                            <div class="nfc-wave wave-2"></div>
-
-                            <div class="nfc-dot"></div>
-
-                        </div>
-
-
-                        <strong>
-                            Aproxime seu celular
-                        </strong>
-
-
-                        <span>
-                            ou escaneie o QR Code
-                        </span>
-
-
-                        <div class="fake-qr">
-
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="review-content">
-
-
-                    <span class="eyebrow">
-                        Reputação não acontece por acaso
-                    </span>
-
-
-                    <h2>
-                        Transforme cada cliente satisfeito
-                        em uma oportunidade de fortalecer sua marca.
-                    </h2>
-
-
-                    <p>
-
-                        Depois de um atendimento bem feito,
-                        o cliente pode aproximar o celular da plaquinha
-                        ou escanear o QR Code e ser levado diretamente
-                        para a avaliação da empresa.
-
-                    </p>
-
-
-                    <p>
-
-                        Quanto mais simples for pedir uma avaliação,
-                        maior a chance de transformar experiências positivas
-                        em prova social para novos clientes.
-
-                    </p>
-
-
-                    <div class="review-benefits">
+                    <div class="feature-list">
 
 
                         <div>
                             <span>✓</span>
-                            NFC
+                            Categorias estratégicas
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Serviços principais
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Áreas atendidas
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Informações completas
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Fotos
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Postagens
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            SEO local
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Estratégia de posicionamento
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- IMAGEM -->
+
+                <div class="solution-media">
+
+                    <div class="image-frame image-frame-product">
+
+                        <img
+                            src="assets/images/google-posicionamento.webp"
+                            alt="Exemplo de perfil Google estruturado para posicionamento local"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="media-chip media-chip-one">
+                        Serviços
+                    </div>
+
+
+                    <div class="media-chip media-chip-two">
+                        Área atendida
+                    </div>
+
+
+                    <div class="media-chip media-chip-three">
+                        SEO Local
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             SITE
+        ====================================================== -->
+
+        <section class="section solution-section solution-section-soft">
+
+            <div class="container solution-layout solution-layout-reverse">
+
+
+                <!-- IMAGEM -->
+
+                <div class="solution-media">
+
+                    <div class="image-frame image-frame-product">
+
+                        <img
+                            src="assets/images/site-profissional-case.webp"
+                            alt="Exemplo de site profissional para empresa local"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="media-chip media-chip-one">
+                        Responsivo
+                    </div>
+
+
+                    <div class="media-chip media-chip-two">
+                        WhatsApp
+                    </div>
+
+
+                    <div class="media-chip media-chip-three">
+                        SEO
+                    </div>
+
+                </div>
+
+
+
+                <!-- COPY -->
+
+                <div class="solution-content">
+
+
+                    <div class="solution-index solution-index-green">
+                        02
+                    </div>
+
+
+                    <span class="eyebrow">
+                        Site profissional
+                    </span>
+
+
+                    <h2>
+
+                        Quando o cliente quiser saber mais,
+                        ele precisa encontrar algo à altura da sua empresa.
+
+                    </h2>
+
+
+                    <p>
+
+                        O site entra como parte da estratégia.
+
+                        Ele apresenta seus serviços,
+                        regiões atendidas, diferenciais
+                        e cria caminhos claros para contato.
+
+                    </p>
+
+
+
+                    <div class="feature-list">
+
+
+                        <div>
+                            <span>✓</span>
+                            Site responsivo
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Serviços estruturados
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Região atendida
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Botões para WhatsApp
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Estrutura para SEO
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Integração com Google
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             AVALIAÇÕES
+        ====================================================== -->
+
+        <section class="section solution-section">
+
+            <div class="container solution-layout">
+
+
+                <!-- COPY -->
+
+                <div class="solution-content">
+
+
+                    <div class="solution-index solution-index-yellow">
+                        03
+                    </div>
+
+
+                    <span class="eyebrow">
+                        Reputação e avaliações
+                    </span>
+
+
+                    <h2>
+
+                        Seu melhor cliente pode ajudar
+                        o próximo a escolher você.
+
+                    </h2>
+
+
+                    <p>
+
+                        Criamos uma estrutura simples
+                        para transformar clientes satisfeitos
+                        em avaliações que fortalecem
+                        a reputação digital da empresa.
+
+                    </p>
+
+
+
+                    <div class="feature-list">
+
+
+                        <div>
+                            <span>✓</span>
+                            Plaquinha inteligente
+                        </div>
+
+
+                        <div>
+                            <span>✓</span>
+                            Tecnologia NFC
                         </div>
 
 
@@ -1405,7 +1023,7 @@
 
                         <div>
                             <span>✓</span>
-                            Link direto
+                            Link direto para avaliação
                         </div>
 
 
@@ -1414,7 +1032,317 @@
                             Processo simples
                         </div>
 
+
+                        <div>
+                            <span>✓</span>
+                            Estratégia contínua
+                        </div>
+
                     </div>
+
+                </div>
+
+
+
+                <!-- IMAGEM REAL PLAQUINHA -->
+
+                <div class="solution-media">
+
+                    <div class="image-frame image-frame-product">
+
+                        <img
+                            src="assets/images/placa-avaliacao-nfc.webp"
+                            alt="Plaquinha inteligente com NFC e QR Code para avaliações"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="media-chip media-chip-one">
+                        NFC
+                    </div>
+
+
+                    <div class="media-chip media-chip-two">
+                        QR Code
+                    </div>
+
+
+                    <div class="media-chip media-chip-three">
+                        Avaliação em segundos
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             ECOSSISTEMA
+        ====================================================== -->
+
+        <section class="section ecosystem-section">
+
+            <div class="container">
+
+
+                <div class="section-heading centered">
+
+
+                    <span class="eyebrow">
+                        Tudo conectado
+                    </span>
+
+
+                    <h2>
+                        Não são três serviços.
+                        É uma estrutura.
+                    </h2>
+
+
+                    <p>
+
+                        Cada elemento fortalece o próximo
+                        e cria uma jornada mais consistente
+                        para quem está procurando sua empresa.
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="ecosystem-image">
+
+                    <img
+                        src="assets/images/ecossistema-local.webp"
+                        alt="Ecossistema de posicionamento local conectando Google, avaliações, site e contato"
+                        loading="lazy"
+                    >
+
+                </div>
+
+
+
+                <div class="ecosystem-flow">
+
+
+                    <div>
+                        <span>01</span>
+                        <strong>Pesquisa</strong>
+                    </div>
+
+
+                    <span class="flow-arrow">
+                        →
+                    </span>
+
+
+                    <div>
+                        <span>02</span>
+                        <strong>Google</strong>
+                    </div>
+
+
+                    <span class="flow-arrow">
+                        →
+                    </span>
+
+
+                    <div>
+                        <span>03</span>
+                        <strong>Avaliações</strong>
+                    </div>
+
+
+                    <span class="flow-arrow">
+                        →
+                    </span>
+
+
+                    <div>
+                        <span>04</span>
+                        <strong>Site</strong>
+                    </div>
+
+
+                    <span class="flow-arrow">
+                        →
+                    </span>
+
+
+                    <div>
+                        <span>05</span>
+                        <strong>Contato</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             RADAR LOCAL
+        ====================================================== -->
+
+        <section
+            class="section radar-section"
+            id="radar"
+        >
+
+            <div class="container radar-layout">
+
+
+                <!-- IMAGEM -->
+
+                <div class="radar-media">
+
+
+                    <div class="radar-browser">
+
+
+                        <div class="radar-browser-top">
+
+                            <span></span>
+                            <span></span>
+                            <span></span>
+
+                        </div>
+
+
+                        <img
+                            src="assets/images/radar-local-dashboard.webp"
+                            alt="Dashboard do Radar Local mostrando demanda e presença digital"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="radar-floating-card radar-demand">
+
+                        <span>
+                            DEMANDA
+                        </span>
+
+                        <strong>
+                            Alta
+                        </strong>
+
+                    </div>
+
+
+                    <div class="radar-floating-card radar-presence">
+
+                        <span>
+                            PRESENÇA
+                        </span>
+
+                        <strong>
+                            32/100
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- COPY -->
+
+                <div class="radar-content">
+
+
+                    <span class="eyebrow">
+                        Radar Local
+                    </span>
+
+
+                    <h2>
+
+                        Antes de mexer na sua empresa,
+                        olhamos o mercado ao redor dela.
+
+                    </h2>
+
+
+                    <p>
+
+                        O Radar Local nos ajuda a visualizar
+                        demanda, presença e oportunidades
+                        na região em que sua empresa atua.
+
+                    </p>
+
+
+                    <p>
+
+                        Isso ajuda a entender o cenário
+                        antes de definir quais pontos
+                        precisam ser priorizados.
+
+                    </p>
+
+
+
+                    <div class="radar-metrics">
+
+
+                        <div>
+
+                            <span>
+                                Demanda
+                            </span>
+
+                            <strong>
+                                Potencial da região
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Presença
+                            </span>
+
+                            <strong>
+                                Estrutura atual
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Oportunidade
+                            </span>
+
+                            <strong>
+                                Pontos de melhoria
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <a
+                        href="#diagnostico"
+                        class="button button-primary"
+                    >
+                        Analisar minha região
+                    </a>
 
                 </div>
 
@@ -1428,7 +1356,7 @@
              ANTES E DEPOIS
         ====================================================== -->
 
-        <section class="section before-after-section">
+        <section class="section transformation-section">
 
             <div class="container">
 
@@ -1437,7 +1365,7 @@
 
 
                     <span class="eyebrow">
-                        O que muda
+                        A mudança
                     </span>
 
 
@@ -1450,28 +1378,27 @@
 
 
 
-                <div class="before-after-grid">
+                <div class="transformation-grid">
 
 
-                    <!-- ANTES -->
-
-                    <article class="comparison comparison-before">
+                    <article class="transformation-column before-column">
 
 
-                        <span class="comparison-label">
+                        <span class="comparison-badge comparison-badge-before">
                             ANTES
                         </span>
 
 
                         <h3>
-                            Presença digital sem estratégia
+                            Sua empresa existe.
+                            Mas o digital não ajuda.
                         </h3>
 
 
                         <ul>
 
                             <li>
-                                Perfil do Google incompleto
+                                Perfil Google incompleto
                             </li>
 
                             <li>
@@ -1479,11 +1406,11 @@
                             </li>
 
                             <li>
-                                Informações desatualizadas
+                                Nenhum site profissional
                             </li>
 
                             <li>
-                                Nenhum site profissional
+                                Serviços mal apresentados
                             </li>
 
                             <li>
@@ -1491,7 +1418,7 @@
                             </li>
 
                             <li>
-                                Concorrentes mais bem apresentados
+                                Concorrentes mais visíveis
                             </li>
 
                         </ul>
@@ -1500,18 +1427,17 @@
 
 
 
-                    <!-- DEPOIS -->
-
-                    <article class="comparison comparison-after">
+                    <article class="transformation-column after-column">
 
 
-                        <span class="comparison-label">
-                            DEPOIS DA ESTRUTURAÇÃO
+                        <span class="comparison-badge comparison-badge-after">
+                            DEPOIS
                         </span>
 
 
                         <h3>
-                            Uma presença preparada para competir
+                            Sua presença começa a trabalhar
+                            junto com o negócio.
                         </h3>
 
 
@@ -1522,7 +1448,7 @@
                             </li>
 
                             <li>
-                                Serviços e regiões organizados
+                                Serviços organizados
                             </li>
 
                             <li>
@@ -1530,7 +1456,7 @@
                             </li>
 
                             <li>
-                                Estratégia contínua de avaliações
+                                Estratégia de avaliações
                             </li>
 
                             <li>
@@ -1538,7 +1464,7 @@
                             </li>
 
                             <li>
-                                Mais caminhos para gerar oportunidades
+                                Mais caminhos para contato
                             </li>
 
                         </ul>
@@ -1554,7 +1480,185 @@
 
 
         <!-- =====================================================
-             O QUE ENTREGAMOS
+             CASES
+        ====================================================== -->
+
+        <section
+            class="section cases-section"
+            id="cases"
+        >
+
+            <div class="container">
+
+
+                <div class="cases-header">
+
+
+                    <div class="section-heading">
+
+                        <span class="eyebrow">
+                            Projetos
+                        </span>
+
+
+                        <h2>
+                            Veja como uma presença estruturada
+                            muda a percepção da empresa.
+                        </h2>
+
+
+                        <p>
+
+                            Alguns exemplos de estruturas
+                            construídas para negócios locais.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="cases-track">
+
+
+                    <!-- CASE 1 -->
+
+                    <article class="case-card">
+
+
+                        <div class="case-image">
+
+                            <img
+                                src="assets/images/case-01.webp"
+                                alt="Case de posicionamento no Google"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+
+                        <div class="case-content">
+
+
+                            <span>
+                                GOOGLE + POSICIONAMENTO
+                            </span>
+
+
+                            <h3>
+                                Perfil local estruturado.
+                            </h3>
+
+
+                            <p>
+
+                                Organização de serviços,
+                                região, informações, conteúdo
+                                e presença digital.
+
+                            </p>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- CASE 2 -->
+
+                    <article class="case-card">
+
+
+                        <div class="case-image">
+
+                            <img
+                                src="assets/images/case-02.webp"
+                                alt="Case de site profissional"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+
+                        <div class="case-content">
+
+
+                            <span>
+                                SITE
+                            </span>
+
+
+                            <h3>
+                                Presença profissional.
+                            </h3>
+
+
+                            <p>
+
+                                Estrutura criada para apresentar
+                                serviços, região e facilitar contato.
+
+                            </p>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- CASE 3 -->
+
+                    <article class="case-card">
+
+
+                        <div class="case-image">
+
+                            <img
+                                src="assets/images/case-03.webp"
+                                alt="Case de sistema de avaliações"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+
+                        <div class="case-content">
+
+
+                            <span>
+                                REPUTAÇÃO
+                            </span>
+
+
+                            <h3>
+                                Avaliações viram estratégia.
+                            </h3>
+
+
+                            <p>
+
+                                NFC e QR Code para tornar
+                                o processo de avaliação
+                                simples para o cliente.
+
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             O QUE ESTÁ INCLUSO
         ====================================================== -->
 
         <section class="section deliverables-section">
@@ -1562,152 +1666,94 @@
             <div class="container">
 
 
-                <div class="section-heading">
+                <div class="section-heading centered">
 
 
                     <span class="eyebrow">
-                        Na prática
+                        Estrutura completa
                     </span>
 
 
                     <h2>
-                        O que estruturamos na sua empresa.
+                        O que entra no projeto.
                     </h2>
 
                 </div>
 
 
 
-                <div class="deliverables-list">
+                <div class="deliverables-grid">
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            01
-                        </span>
-
-                        <strong>
-                            Google Perfil da Empresa
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>01</span>
+                        Google Perfil da Empresa
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            02
-                        </span>
-
-                        <strong>
-                            Estratégia de SEO local
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>02</span>
+                        Estratégia de SEO local
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            03
-                        </span>
-
-                        <strong>
-                            Principais serviços
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>03</span>
+                        Serviços principais
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            04
-                        </span>
-
-                        <strong>
-                            Regiões e áreas atendidas
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>04</span>
+                        Regiões atendidas
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            05
-                        </span>
-
-                        <strong>
-                            Fotos e conteúdo
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>05</span>
+                        Fotos e conteúdo
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            06
-                        </span>
-
-                        <strong>
-                            Site profissional
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>06</span>
+                        Postagens
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            07
-                        </span>
-
-                        <strong>
-                            Estrutura de conversão para WhatsApp
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>07</span>
+                        Site profissional
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            08
-                        </span>
-
-                        <strong>
-                            Sistema de avaliações
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>08</span>
+                        Integração com WhatsApp
                     </div>
 
 
-                    <div class="deliverable">
-
-                        <span>
-                            09
-                        </span>
-
-                        <strong>
-                            Plaquinha NFC + QR Code
-                        </strong>
-
+                    <div class="deliverable-item">
+                        <span>09</span>
+                        Sistema de avaliações
                     </div>
 
 
-                    <div class="deliverable">
+                    <div class="deliverable-item">
+                        <span>10</span>
+                        Plaquinha NFC + QR Code
+                    </div>
 
-                        <span>
-                            10
-                        </span>
 
-                        <strong>
-                            Integração entre os ativos digitais
-                        </strong>
+                    <div class="deliverable-item">
+                        <span>11</span>
+                        Estratégia de reputação
+                    </div>
 
+
+                    <div class="deliverable-item">
+                        <span>12</span>
+                        Integração dos ativos
                     </div>
 
                 </div>
@@ -1719,13 +1765,10 @@
 
 
         <!-- =====================================================
-             COMO FUNCIONA
+             PROCESSO
         ====================================================== -->
 
-        <section
-            class="section process-section"
-            id="como-funciona"
-        >
+        <section class="section process-section">
 
             <div class="container">
 
@@ -1739,85 +1782,62 @@
 
 
                     <h2>
-                        Primeiro analisamos.
+                        Primeiro entendemos.
                         Depois estruturamos.
                     </h2>
-
-
-                    <p>
-
-                        Cada empresa possui um cenário diferente.
-                        Por isso começamos entendendo sua presença atual.
-
-                    </p>
 
                 </div>
 
 
 
-                <div class="process">
+                <div class="process-grid">
 
 
-                    <article class="process-step">
+                    <article>
 
-                        <span class="process-number">
+                        <span class="process-icon process-blue">
                             01
                         </span>
-
 
                         <h3>
                             Diagnóstico
                         </h3>
 
-
                         <p>
-                            Analisamos como sua empresa está posicionada hoje.
+                            Entendemos como sua empresa aparece hoje.
                         </p>
 
                     </article>
 
 
 
-                    <div class="process-line"></div>
+                    <article>
 
-
-
-                    <article class="process-step">
-
-                        <span class="process-number">
+                        <span class="process-icon process-red">
                             02
                         </span>
-
 
                         <h3>
                             Estratégia
                         </h3>
 
-
                         <p>
-                            Definimos os principais serviços,
-                            regiões e oportunidades de posicionamento.
+                            Definimos serviços, região e prioridades.
                         </p>
 
                     </article>
 
 
 
-                    <div class="process-line"></div>
+                    <article>
 
-
-
-                    <article class="process-step">
-
-                        <span class="process-number">
+                        <span class="process-icon process-yellow">
                             03
                         </span>
-
 
                         <h3>
                             Implementação
                         </h3>
-
 
                         <p>
                             Estruturamos Google, site e reputação.
@@ -1827,25 +1847,18 @@
 
 
 
-                    <div class="process-line"></div>
+                    <article>
 
-
-
-                    <article class="process-step">
-
-                        <span class="process-number">
+                        <span class="process-icon process-green">
                             04
                         </span>
-
 
                         <h3>
                             Presença ativa
                         </h3>
 
-
                         <p>
-                            Sua empresa passa a ter uma base
-                            mais profissional para competir localmente.
+                            Sua empresa passa a ter uma base mais profissional.
                         </p>
 
                     </article>
@@ -1859,7 +1872,7 @@
 
 
         <!-- =====================================================
-             SOBRE
+             SOBRE DIEGO
         ====================================================== -->
 
         <section
@@ -1867,34 +1880,41 @@
             id="sobre"
         >
 
-            <div class="container about-container">
+            <div class="container about-layout">
 
 
-                <div class="about-photo">
+                <!-- FOTO -->
+
+                <div class="about-media">
+
+                    <div class="image-frame about-image">
+
+                        <img
+                            src="assets/images/diego-posicionamento.webp"
+                            alt="Diego Nogueira"
+                            loading="lazy"
+                        >
+
+                    </div>
 
 
-                    <img
-                        src="assets/images/diego-profissional.jpg"
-                        alt="Diego Nogueira"
-                        loading="lazy"
-                    >
-
-
-                    <div class="about-photo-info">
-
-                        <span>
-                            DIEGO NOGUEIRA
-                        </span>
+                    <div class="about-signature">
 
                         <strong>
-                            Estruturação Digital
+                            Diego Nogueira
                         </strong>
+
+                        <span>
+                            Estruturação Digital
+                        </span>
 
                     </div>
 
                 </div>
 
 
+
+                <!-- COPY -->
 
                 <div class="about-content">
 
@@ -1905,45 +1925,40 @@
 
 
                     <h2>
-                        O seu cliente já está procurando no digital.
+
+                        Pequenas empresas também podem
+                        parecer grandes no digital.
+
                     </h2>
 
 
                     <p class="about-lead">
 
-                        Meu trabalho é ajudar pequenas e médias empresas
-                        a se posicionarem melhor nesse ambiente.
+                        Meu trabalho é ajudar empresas
+                        a estruturarem a presença digital
+                        para acompanhar a forma como o consumidor
+                        já pesquisa e escolhe negócios.
 
                     </p>
 
 
                     <p>
 
-                        Acredito que uma empresa local não precisa
-                        depender somente de indicação para crescer.
+                        O Posicionamento Local é uma parte
+                        da Estruturação Digital.
 
-                        Ela pode construir uma presença capaz
-                        de ser encontrada, transmitir confiança
-                        e gerar novas oportunidades todos os dias.
-
-                    </p>
-
-
-                    <p>
-
-                        O Posicionamento Local faz parte
-                        de uma metodologia maior de Estruturação Digital
-                        que conecta posicionamento, aquisição,
-                        comercial e tecnologia.
+                        A ideia é simples:
+                        organizar os pontos que fazem sua empresa
+                        ser encontrada, percebida e escolhida.
 
                     </p>
 
 
                     <blockquote>
 
-                        “Não basta estar no digital.
+                        “O cliente já está no digital.
                         Sua empresa precisa estar preparada
-                        para ser encontrada nele.”
+                        para recebê-lo.”
 
                     </blockquote>
 
@@ -1956,7 +1971,7 @@
 
 
         <!-- =====================================================
-             DIAGNÓSTICO LOCAL
+             DIAGNÓSTICO
         ====================================================== -->
 
         <section
@@ -1964,10 +1979,12 @@
             id="diagnostico"
         >
 
-            <div class="container diagnostic-container">
+            <div class="container diagnostic-layout">
 
 
-                <div class="diagnostic-content">
+                <!-- LADO VISUAL -->
+
+                <div class="diagnostic-intro">
 
 
                     <span class="eyebrow">
@@ -1976,39 +1993,41 @@
 
 
                     <h2>
-                        Descubra como sua empresa está posicionada hoje.
+                        Vamos descobrir como sua empresa aparece hoje?
                     </h2>
 
 
                     <p>
 
-                        Responda algumas perguntas rápidas
-                        para entendermos seu cenário atual
-                        e identificarmos se existe oportunidade
-                        de melhorar sua presença local.
+                        Responda algumas perguntas rápidas.
+                        No final, conectamos a análise
+                        ao Radar Local para aprofundar
+                        o cenário da sua região.
 
                     </p>
 
 
 
-                    <div class="diagnostic-benefits">
+                    <div class="diagnostic-preview">
 
 
-                        <div>
-                            <span>✓</span>
-                            Perguntas rápidas
-                        </div>
+                        <img
+                            src="assets/images/radar-local-dashboard.webp"
+                            alt="Prévia do Radar Local"
+                            loading="lazy"
+                        >
 
 
-                        <div>
-                            <span>✓</span>
-                            Diagnóstico inicial
-                        </div>
+                        <div class="diagnostic-preview-overlay">
 
+                            <span>
+                                RADAR LOCAL
+                            </span>
 
-                        <div>
-                            <span>✓</span>
-                            Sem compromisso
+                            <strong>
+                                Diagnóstico de demanda e presença
+                            </strong>
+
                         </div>
 
                     </div>
@@ -2017,15 +2036,15 @@
 
 
 
-                <!-- =================================================
-                     QUIZ
-                ================================================== -->
+                <!-- QUIZ -->
 
                 <div
                     class="quiz"
                     id="localQuiz"
                 >
 
+
+                    <!-- PROGRESSO -->
 
                     <div class="quiz-header">
 
@@ -2035,7 +2054,6 @@
                             <span id="quizStepText">
                                 Pergunta 1 de 6
                             </span>
-
 
                             <span id="quizPercentage">
                                 17%
@@ -2065,7 +2083,7 @@
                     >
 
                         <span class="quiz-label">
-                            Vamos começar
+                            Seu negócio
                         </span>
 
 
@@ -2150,7 +2168,7 @@
 
 
                         <h3>
-                            Sua empresa possui Perfil da Empresa no Google?
+                            Como está o perfil da sua empresa no Google?
                         </h3>
 
 
@@ -2162,7 +2180,7 @@
                                 class="quiz-option"
                                 data-value="Sim, bem estruturado"
                             >
-                                Sim, e está bem estruturado
+                                Está bem estruturado
                             </button>
 
 
@@ -2171,7 +2189,7 @@
                                 class="quiz-option"
                                 data-value="Sim, mas pouco estruturado"
                             >
-                                Sim, mas quase não mexemos
+                                Existe, mas quase não mexemos
                             </button>
 
 
@@ -2180,7 +2198,7 @@
                                 class="quiz-option"
                                 data-value="Não"
                             >
-                                Não possui
+                                Não temos
                             </button>
 
 
@@ -2189,7 +2207,7 @@
                                 class="quiz-option"
                                 data-value="Não sei"
                             >
-                                Não sei
+                                Não sei dizer
                             </button>
 
                         </div>
@@ -2322,12 +2340,12 @@
                     >
 
                         <span class="quiz-label">
-                            Momento atual
+                            Cenário atual
                         </span>
 
 
                         <h3>
-                            Hoje, qual cenário mais representa sua empresa?
+                            Qual situação mais representa sua empresa hoje?
                         </h3>
 
 
@@ -2402,6 +2420,7 @@
                         </h3>
 
 
+
                         <div class="quiz-fields">
 
 
@@ -2421,6 +2440,7 @@
                             </div>
 
 
+
                             <div class="quiz-field">
 
                                 <label for="quizCompany">
@@ -2436,6 +2456,7 @@
                             </div>
 
 
+
                             <div class="quiz-field">
 
                                 <label for="quizCity">
@@ -2449,6 +2470,7 @@
                                 >
 
                             </div>
+
 
 
                             <div class="quiz-field">
@@ -2478,10 +2500,8 @@
                             >
 
                             <span>
-
-                                Autorizo o contato para dar continuidade
-                                ao diagnóstico.
-
+                                Autorizo o contato para continuidade
+                                do diagnóstico.
                             </span>
 
                         </label>
@@ -2508,23 +2528,22 @@
                         hidden
                     >
 
-
                         <span class="quiz-result-label">
-                            ANÁLISE CONCLUÍDA
+                            PRÉ-DIAGNÓSTICO CONCLUÍDO
                         </span>
 
 
                         <h3>
-                            Já temos uma primeira leitura
-                            da sua presença local.
+                            Já conseguimos identificar
+                            alguns pontos de atenção.
                         </h3>
 
 
                         <p>
 
-                            Com base nas respostas,
-                            conseguimos identificar quais pontos
-                            merecem mais atenção na sua empresa.
+                            Agora podemos levar essas informações
+                            para o Radar Local e aprofundar
+                            a análise da sua região.
 
                         </p>
 
@@ -2533,11 +2552,7 @@
                         <div
                             class="result-priorities"
                             id="resultPriorities"
-                        >
-
-                            <!-- JS INSERE AQUI -->
-
-                        </div>
+                        ></div>
 
 
 
@@ -2546,7 +2561,7 @@
                             class="button button-primary"
                             id="resultWhatsapp"
                         >
-                            Receber análise no WhatsApp
+                            Analisar minha região no Radar Local
                         </a>
 
                     </div>
@@ -2593,7 +2608,8 @@
                 <p>
 
                     Descubra como está sua presença local
-                    e quais pontos podem ser melhorados.
+                    e quais pontos podem estar limitando
+                    sua visibilidade na região.
 
                 </p>
 
@@ -2602,7 +2618,7 @@
                     href="#diagnostico"
                     class="button button-light"
                 >
-                    Analisar minha empresa
+                    Fazer meu diagnóstico
                 </a>
 
             </div>
@@ -2624,43 +2640,39 @@
 
             <div class="footer-brand">
 
-
                 <strong>
                     Diego Nogueira
                 </strong>
-
 
                 <span>
                     Estruturação Digital
                 </span>
 
-
                 <p>
-
-                    Posicionamento Digital Local
-                    para pequenas e médias empresas.
-
+                    Posicionamento Local para pequenas
+                    e médias empresas.
                 </p>
 
             </div>
 
 
 
-            <nav
-                class="footer-nav"
-                aria-label="Menu do rodapé"
-            >
+            <nav class="footer-nav">
 
                 <a href="#problema">
-                    Por que isso importa
+                    O problema
                 </a>
 
                 <a href="#estrutura">
-                    O que fazemos
+                    A solução
                 </a>
 
-                <a href="#como-funciona">
-                    Como funciona
+                <a href="#radar">
+                    Radar Local
+                </a>
+
+                <a href="#cases">
+                    Cases
                 </a>
 
                 <a href="#sobre">
@@ -2694,7 +2706,7 @@
 
 
     <!-- =====================================================
-         WHATSAPP FLUTUANTE
+         WHATSAPP
     ====================================================== -->
 
     <a
