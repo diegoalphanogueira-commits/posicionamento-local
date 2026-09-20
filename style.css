@@ -3832,3 +3832,125 @@ button {
 .diagnostic-form {
     overflow: visible !important;
 }
+/* =========================================================
+   CAMPO SEGMENTO
+========================================================= */
+
+.segment-field {
+    position: relative;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.select-wrapper select {
+    width: 100%;
+    height: 56px;
+
+    padding:
+        0 48px
+        0 16px;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    border:
+        1px solid
+        #d7dfeb;
+
+    border-radius:
+        16px;
+
+    background:
+        #ffffff;
+
+    color:
+        #202124;
+
+    font-family:
+        inherit;
+
+    font-size:
+        0.95rem;
+
+    outline:
+        none;
+
+    cursor:
+        pointer;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.select-wrapper select:focus {
+    border-color:
+        #2878f0;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(40, 120, 240, 0.10);
+}
+
+.select-wrapper select:invalid {
+    color:
+        #98a3b3;
+}
+
+
+/* SETA */
+
+.select-arrow {
+    position:
+        absolute;
+
+    top:
+        50%;
+
+    right:
+        18px;
+
+    transform:
+        translateY(-50%);
+
+    color:
+        #2878f0;
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        700;
+
+    pointer-events:
+        none;
+}
+
+
+/* OUTRO SEGMENTO */
+
+.custom-segment-field {
+    margin-top:
+        14px;
+}
+
+.custom-segment-field label {
+    display:
+        block;
+
+    margin-bottom:
+        8px;
+}
+
+.custom-segment-field input {
+    width:
+        100%;
+}
+
+.hidden {
+    display:
+        none !important;
+}
