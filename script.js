@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ========================= */
 
         var radarUrl =
-            "https://radar.metodoflow.com.br/";
+            "https://diegoalphanogueira-commits.github.io/radar-local/";
 
 
         var params =
