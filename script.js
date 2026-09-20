@@ -2960,7 +2960,13 @@ function setupDiagnosticForm() {
                 );
 
 
-            const businessInput =
+            const companyInput =
+                document.getElementById(
+                    "company"
+                );
+
+
+            const addressInput =
                 document.getElementById(
                     "businessQuery"
                 );
@@ -2985,8 +2991,8 @@ function setupDiagnosticForm() {
                 "";
 
 
-            const businessQuery =
-                businessInput
+            const company =
+                companyInput
                     ?.value
                     .trim() ||
                 "";
@@ -3016,9 +3022,7 @@ function setupDiagnosticForm() {
 
 
             /*
-                Obrigamos o usuário
-                a selecionar uma cidade
-                real do autocomplete.
+                CIDADE
             */
 
             if (
@@ -3038,13 +3042,17 @@ function setupDiagnosticForm() {
             }
 
 
+            /*
+                EMPRESA
+            */
+
             if (
-                !businessQuery
+                !company
             ) {
 
                 showError(
-                    businessInput,
-                    "Informe o nome da empresa ou endereço."
+                    companyInput,
+                    "Informe o nome da empresa."
                 );
 
                 valid =
@@ -3052,6 +3060,32 @@ function setupDiagnosticForm() {
 
             }
 
+
+            /*
+                ENDEREÇO
+            */
+
+            if (
+                !selectedBusiness ||
+                !selectedBusiness.address ||
+                selectedBusiness.lat === "" ||
+                selectedBusiness.lon === ""
+            ) {
+
+                showError(
+                    addressInput,
+                    "Selecione o endereço correto nas sugestões."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            /*
+                SEGMENTO
+            */
 
             if (
                 !segment
@@ -3067,6 +3101,10 @@ function setupDiagnosticForm() {
 
             }
 
+
+            /*
+                WHATSAPP
+            */
 
             if (
                 phone.length < 10
@@ -3103,7 +3141,7 @@ function setupDiagnosticForm() {
 
                 region,
 
-                businessQuery,
+                company,
 
                 segment,
 
