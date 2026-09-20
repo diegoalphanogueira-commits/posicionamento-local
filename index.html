@@ -1614,38 +1614,149 @@
     >
 
 
-    <!-- =====================================================
-         2. EMPRESA OU ENDEREÇO
-    ====================================================== -->
+   <!-- =====================================================
+     2. EMPRESA OU ENDEREÇO
+====================================================== -->
 
-    <div class="field">
+<div class="field business-search-field">
 
-        <label for="businessQuery">
-            Nome da empresa ou endereço
-        </label>
+    <label for="businessQuery">
+        Nome da empresa ou endereço
+    </label>
 
-        <div class="place-search-wrapper">
 
-            <span class="place-search-icon">
-                ◎
+    <div class="place-search-wrapper">
+
+        <span class="place-search-icon">
+            ◎
+        </span>
+
+        <input
+            type="text"
+            id="businessQuery"
+            name="businessQuery"
+            placeholder="Ex.: Pensol Seguros ou Rua X, 123"
+            autocomplete="off"
+            required
+        >
+
+        <span
+            id="businessSearchLoader"
+            class="place-search-loader hidden"
+        ></span>
+
+    </div>
+
+
+    <!-- SUGESTÕES DO GOOGLE -->
+
+    <div
+        id="businessSuggestions"
+        class="place-suggestions hidden"
+    ></div>
+
+
+    <!-- EMPRESA SELECIONADA -->
+
+    <div
+        id="selectedBusinessCard"
+        class="selected-place-card hidden"
+    >
+
+        <div class="selected-place-check">
+            ✓
+        </div>
+
+
+        <div class="selected-place-copy">
+
+            <span>
+                EMPRESA IDENTIFICADA
             </span>
 
-            <input
-                type="text"
-                id="businessQuery"
-                name="businessQuery"
-                placeholder="Ex.: Pensol Seguros ou Rua X, 123"
-                autocomplete="off"
-                required
-            >
+            <strong id="selectedBusinessName">
+                Empresa
+            </strong>
+
+            <small id="selectedBusinessAddress">
+                Endereço
+            </small>
+
+            <small id="selectedBusinessMeta">
+            </small>
 
         </div>
 
-        <small class="form-helper">
-            Informe como sua empresa aparece no Google ou o endereço onde ela está.
-        </small>
+
+        <button
+            type="button"
+            id="changeBusinessButton"
+            class="change-place-button"
+        >
+            Alterar
+        </button>
 
     </div>
+
+
+    <small class="form-helper">
+        Busque pelo nome da empresa ou pelo endereço.
+    </small>
+
+
+    <!-- =====================================================
+         DADOS REAIS DO GOOGLE PLACES
+    ====================================================== -->
+
+    <input
+        type="hidden"
+        id="businessPlaceId"
+        name="businessPlaceId"
+    >
+
+    <input
+        type="hidden"
+        id="businessName"
+        name="businessName"
+    >
+
+    <input
+        type="hidden"
+        id="businessAddress"
+        name="businessAddress"
+    >
+
+    <input
+        type="hidden"
+        id="businessLat"
+        name="businessLat"
+    >
+
+    <input
+        type="hidden"
+        id="businessLon"
+        name="businessLon"
+    >
+
+    <input
+        type="hidden"
+        id="businessRating"
+        name="businessRating"
+    >
+
+    <input
+        type="hidden"
+        id="businessRatingCount"
+        name="businessRatingCount"
+    >
+
+    <input
+        type="hidden"
+        id="businessType"
+        name="businessType"
+    >
+
+</div>
 
 
     <!-- =====================================================
