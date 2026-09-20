@@ -1535,260 +1535,179 @@
 
 
         <form
-            class="diagnostic-form"
-            id="diagnosticForm"
-        >
-
-
-            <!-- =====================================================
-                 1. CIDADE / REGIÃO
-            ====================================================== -->
-
-            <div class="field region-search-field">
-
-                <label for="region">
-                    Cidade / região
-                </label>
-
-                <div class="place-search-wrapper">
-
-                    <span class="place-search-icon">
-                        ◎
-                    </span>
-
-                    <input
-                        type="text"
-                        id="region"
-                        name="region"
-                        placeholder="Digite sua cidade"
-                        autocomplete="off"
-                        required
-                    >
-
-                    <span
-                        id="regionSearchLoader"
-                        class="place-search-loader hidden"
-                    ></span>
-
-                </div>
-
-
-                <div
-                    id="regionSuggestions"
-                    class="place-suggestions hidden"
-                ></div>
-
-            </div>
-
-
-
-            <!-- =====================================================
-                 2. BUSCA DA EMPRESA / ENDEREÇO
-            ====================================================== -->
-
-            <div class="field place-search-field">
-
-                <label for="placeSearch">
-                    Encontre sua empresa ou endereço
-                </label>
-
-                <div class="place-search-wrapper">
-
-                    <span class="place-search-icon">
-                        ◎
-                    </span>
-
-                    <input
-                        id="placeSearch"
-                        type="text"
-                        placeholder="Primeiro informe sua cidade"
-                        autocomplete="off"
-                    >
-
-                    <span
-                        id="placeSearchLoader"
-                        class="place-search-loader hidden"
-                    ></span>
-
-                </div>
-
-
-                <div
-                    id="placeSuggestions"
-                    class="place-suggestions hidden"
-                ></div>
-
-
-                <div
-                    id="selectedPlaceCard"
-                    class="selected-place-card hidden"
-                >
-
-                    <div class="selected-place-check">
-                        ✓
-                    </div>
-
-
-                    <div class="selected-place-copy">
-
-                        <span>
-                            LOCAL IDENTIFICADO
-                        </span>
-
-                        <strong id="selectedPlaceName">
-                            Empresa
-                        </strong>
-
-                        <small id="selectedPlaceAddress">
-                            Endereço
-                        </small>
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        id="changePlaceButton"
-                        class="change-place-button"
-                    >
-                        Alterar
-                    </button>
-
-                </div>
-
-
-                <!-- DADOS ESTRUTURADOS -->
-
-                <input
-                    type="hidden"
-                    id="placeAddress"
-                    name="placeAddress"
-                >
-
-                <input
-                    type="hidden"
-                    id="placeCity"
-                    name="placeCity"
-                >
-
-                <input
-                    type="hidden"
-                    id="placeState"
-                    name="placeState"
-                >
-
-                <input
-                    type="hidden"
-                    id="placePostcode"
-                    name="placePostcode"
-                >
-
-                <input
-                    type="hidden"
-                    id="placeLat"
-                    name="placeLat"
-                >
-
-                <input
-                    type="hidden"
-                    id="placeLon"
-                    name="placeLon"
-                >
-
-                <input
-                    type="hidden"
-                    id="placeId"
-                    name="placeId"
-                >
-
-            </div>
-
-
-
-            <!-- =====================================================
-                 3. EMPRESA + SEGMENTO
-            ====================================================== -->
-
-            <div class="form-row">
-
-                <label>
-
-                    <span>
-                        Empresa
-                    </span>
-
-                    <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        placeholder="Nome da empresa"
-                        required
-                    >
-
-                </label>
-
-
-                <label>
-
-                    <span>
-                        Segmento
-                    </span>
-
-                    <input
-                        type="text"
-                        id="segment"
-                        name="segment"
-                        placeholder="Ex.: Clínica estética"
-                        required
-                    >
-
-                </label>
-
-            </div>
-
-
-
-            <!-- =====================================================
-                 4. WHATSAPP
-            ====================================================== -->
-
-            <label>
-
-                <span>
-                    WhatsApp
-                </span>
-
-                <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    placeholder="(11) 99999-9999"
-                    required
-                >
-
-            </label>
-
-
-
-            <!-- =====================================================
-                 BOTÃO
-            ====================================================== -->
-
-            <button
-                type="submit"
-                class="button button-primary form-submit"
+    class="diagnostic-form"
+    id="diagnosticForm"
+>
+
+    <!-- =====================================================
+         1. CIDADE / REGIÃO
+    ====================================================== -->
+
+    <div class="field region-search-field">
+
+        <label for="region">
+            Cidade / região
+        </label>
+
+        <div class="place-search-wrapper">
+
+            <span class="place-search-icon">
+                ◎
+            </span>
+
+            <input
+                type="text"
+                id="region"
+                name="region"
+                placeholder="Digite sua cidade"
+                autocomplete="off"
+                required
             >
 
-                Analisar minha presença
+            <span
+                id="regionSearchLoader"
+                class="place-search-loader hidden"
+            ></span>
 
-                <span>
-                    →
-                </span>
+        </div>
 
-            </button>
+        <div
+            id="regionSuggestions"
+            class="place-suggestions hidden"
+        ></div>
+
+    </div>
 
 
-        </form>
+    <!-- =====================================================
+         DADOS DA CIDADE SELECIONADA
+    ====================================================== -->
+
+    <input
+        type="hidden"
+        id="cityLat"
+        name="cityLat"
+    >
+
+    <input
+        type="hidden"
+        id="cityLon"
+        name="cityLon"
+    >
+
+    <input
+        type="hidden"
+        id="cityName"
+        name="cityName"
+    >
+
+    <input
+        type="hidden"
+        id="cityState"
+        name="cityState"
+    >
+
+    <input
+        type="hidden"
+        id="cityPlaceId"
+        name="cityPlaceId"
+    >
+
+
+    <!-- =====================================================
+         2. EMPRESA OU ENDEREÇO
+    ====================================================== -->
+
+    <div class="field">
+
+        <label for="businessQuery">
+            Nome da empresa ou endereço
+        </label>
+
+        <div class="place-search-wrapper">
+
+            <span class="place-search-icon">
+                ◎
+            </span>
+
+            <input
+                type="text"
+                id="businessQuery"
+                name="businessQuery"
+                placeholder="Ex.: Pensol Seguros ou Rua X, 123"
+                autocomplete="off"
+                required
+            >
+
+        </div>
+
+        <small class="form-helper">
+            Informe como sua empresa aparece no Google ou o endereço onde ela está.
+        </small>
+
+    </div>
+
+
+    <!-- =====================================================
+         3. SEGMENTO
+    ====================================================== -->
+
+    <div class="field">
+
+        <label for="segment">
+            Segmento
+        </label>
+
+        <input
+            type="text"
+            id="segment"
+            name="segment"
+            placeholder="Ex.: Corretora de seguros"
+            required
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         4. WHATSAPP
+    ====================================================== -->
+
+    <div class="field">
+
+        <label for="phone">
+            WhatsApp
+        </label>
+
+        <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="(11) 99999-9999"
+            required
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         BOTÃO
+    ====================================================== -->
+
+    <button
+        type="submit"
+        class="button button-primary form-submit"
+    >
+
+        Encontrar minha empresa
+
+        <span>
+            →
+        </span>
+
+    </button>
+
+</form>
 
     </div>
 
