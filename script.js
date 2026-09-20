@@ -1514,7 +1514,7 @@ async function searchBusinessesGeoapify(
     ) {
 
         renderBusinessMessage(
-            "Busca ainda não configurada."
+            "Busca de endereço ainda não configurada."
         );
 
         return;
@@ -1555,74 +1555,272 @@ async function searchBusinessesGeoapify(
 
     try {
 
-        let url;
+        const url =
+            new URL(
+                "https://api.geoapify.com/v1/geocode/autocomplete"
+            );
 
 
         /*
-            Se parece endereço:
-            usamos GEOCODING.
+            Sempre buscamos ENDEREÇO.
 
-            Ex:
-            Rua X, 123
-            Avenida Y
-            663
+            Exemplo final:
+            Rua Waldemar de Paula Ferreira, 663,
+            Guarulhos, SP, Brasil
+        */
+
+        const searchText =
+            [
+                query,
+                selectedCity.name,
+                selectedCity.stateCode,
+                "Brasil"
+            ]
+                .filter(Boolean)
+                .join(", ");
+
+
+        url.searchParams.set(
+            "text",
+            searchText
+        );
+
+
+        url.searchParams.set(
+            "format",
+            "json"
+        );
+
+
+        url.searchParams.set(
+            "filter",
+            "countrycode:br"
+        );
+
+
+        /*
+            Dá preferência para endereços
+            próximos à cidade escolhida.
         */
 
         if (
-            looksLikeAddress(
-                query
-            )
+            selectedCity.lat &&
+            selectedCity.lon
         ) {
 
-            url =
-                new URL(
-                    "https://api.geoapify.com/v1/geocode/autocomplete"
-                );
-
-
-            const searchText =
-                [
-                    query,
-                    selectedCity.name,
-                    selectedCity.stateCode,
-                    "Brasil"
-                ]
-                    .filter(Boolean)
-                    .join(", ");
-
-
             url.searchParams.set(
-                "text",
-                searchText
+                "bias",
+                `proximity:${selectedCity.lon},${selectedCity.lat}`
             );
-
-
-            url.searchParams.set(
-                "format",
-                "json"
-            );
-
-
-            url.searchParams.set(
-                "filter",
-                "countrycode:br"
-            );
-
-
-            if (
-                selectedCity.lat &&
-                selectedCity.lon
-            ) {
-
-                url.searchParams.set(
-                    "bias",
-                    `proximity:${selectedCity.lon},${selectedCity.lat}`
-                );
-
-            }
 
         }
 
+
+        url.searchParams.set(
+            "lang",
+            "pt"
+        );
+
+
+        url.searchParams.set(
+            "limit",
+            "6"
+        );
+
+
+        url.searchParams.set(
+            "apiKey",
+            GEOAPIFY_API_KEY
+        );
+
+
+        const response =
+            await fetch(
+                url.toString(),
+                {
+                    signal:
+                        businessAbortController.signal
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                "Geoapify respondeu com status " +
+                response.status
+            );
+
+        }
+
+
+        const payload =
+            await response.json();
+
+
+        let results = [];
+
+
+        if (
+            Array.isArray(
+                payload.results
+            )
+        ) {
+
+            results =
+                payload.results;
+
+        }
+
+        else if (
+            Array.isArray(
+                payload.features
+            )
+        ) {
+
+            results =
+                payload.features.map(
+                    function (feature) {
+
+                        const properties =
+                            feature.properties ||
+                            {};
+
+
+                        if (
+                            feature.geometry &&
+                            Array.isArray(
+                                feature.geometry.coordinates
+                            )
+                        ) {
+
+                            properties.lon =
+                                properties.lon ??
+                                feature.geometry.coordinates[0];
+
+
+                            properties.lat =
+                                properties.lat ??
+                                feature.geometry.coordinates[1];
+
+                        }
+
+
+                        return properties;
+
+                    }
+                );
+
+        }
+
+
+        /*
+            Mantemos primeiro os resultados
+            realmente relacionados à cidade.
+        */
+
+        const cityName =
+            normalizeText(
+                selectedCity.name
+            );
+
+
+        results =
+            results.sort(
+                function (
+                    a,
+                    b
+                ) {
+
+                    const cityA =
+                        normalizeText(
+                            a.city ||
+                            a.town ||
+                            a.village ||
+                            ""
+                        );
+
+
+                    const cityB =
+                        normalizeText(
+                            b.city ||
+                            b.town ||
+                            b.village ||
+                            ""
+                        );
+
+
+                    const scoreA =
+                        cityA === cityName
+                            ? 1
+                            : 0;
+
+
+                    const scoreB =
+                        cityB === cityName
+                            ? 1
+                            : 0;
+
+
+                    return (
+                        scoreB -
+                        scoreA
+                    );
+
+                }
+            );
+
+
+        console.log(
+            "Endereços encontrados:",
+            results
+        );
+
+
+        renderBusinessSuggestions(
+            results.slice(
+                0,
+                5
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            return;
+
+        }
+
+
+        console.error(
+            "Erro ao buscar endereço:",
+            error
+        );
+
+
+        renderBusinessMessage(
+            "Não foi possível localizar esse endereço agora."
+        );
+
+    }
+
+    finally {
+
+        setBusinessLoading(
+            false
+        );
+
+    }
+
+}
 
         /*
             Se parece nome de empresa:
@@ -2041,7 +2239,7 @@ function renderBusinessSuggestions(
     ) {
 
         renderBusinessMessage(
-            "Nenhum estabelecimento ou endereço encontrado."
+            "Nenhum endereço encontrado."
         );
 
         return;
@@ -2097,19 +2295,20 @@ function renderBusinessSuggestions(
 
 
             /*
-                Quando Geoapify conhece
-                o nome do estabelecimento,
-                mostramos o nome.
-
-                Caso contrário,
-                mostramos o endereço principal.
+                Aqui mostramos o endereço,
+                não o nome do estabelecimento.
             */
 
             title.textContent =
-                place.name ||
                 place.address_line1 ||
+                [
+                    place.street,
+                    place.housenumber
+                ]
+                    .filter(Boolean)
+                    .join(", ") ||
                 place.formatted ||
-                "Local encontrado";
+                "Endereço encontrado";
 
 
             const subtitle =
@@ -2119,13 +2318,16 @@ function renderBusinessSuggestions(
 
 
             subtitle.textContent =
-                place.formatted ||
                 [
-                    place.city,
+                    place.suburb,
+                    place.city ||
+                    place.town ||
+                    place.village,
+                    place.state_code ||
                     place.state
                 ]
                     .filter(Boolean)
-                    .join(" - ");
+                    .join(" · ");
 
 
             copy.appendChild(
@@ -2174,7 +2376,6 @@ function renderBusinessSuggestions(
 
 }
 
-
 /* =========================================================
    SELECIONAR ESTABELECIMENTO
 ========================================================= */
@@ -2183,43 +2384,35 @@ function selectBusinessGeoapify(
     place
 ) {
 
-    const input =
+    const companyInput =
         document.getElementById(
-            "businessQuery"
+            "company"
         );
 
 
-    /*
-        Guardamos exatamente o que
-        o usuário digitou para usar
-        como fallback caso o Geoapify
-        não tenha nome comercial.
-    */
-
-    const typedQuery =
-        input
+    const companyName =
+        companyInput
             ?.value
             .trim() ||
         "";
 
 
-    const realName =
-        place.name ||
-        "";
-
-
     selectedBusiness = {
+
+        /*
+            Nome informado pela pessoa.
+        */
+
+        name:
+            companyName,
+
+        /*
+            Identificação real do endereço.
+        */
 
         placeId:
             place.place_id ||
             "",
-
-        name:
-            realName ||
-            typedQuery,
-
-        officialName:
-            realName,
 
         address:
             place.formatted ||
@@ -2235,6 +2428,8 @@ function selectBusinessGeoapify(
 
         city:
             place.city ||
+            place.town ||
+            place.village ||
             selectedCity?.name ||
             "",
 
@@ -2252,10 +2447,9 @@ function selectBusinessGeoapify(
             place.postcode ||
             "",
 
-        category:
-            formatGeoapifyCategory(
-                place.category
-            ),
+        suburb:
+            place.suburb ||
+            "",
 
         resultType:
             place.result_type ||
