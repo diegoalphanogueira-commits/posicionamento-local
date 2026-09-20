@@ -20,7 +20,7 @@
 */
 
 const RADAR_LOCAL_URL =
-    "COLE_AQUI_A_URL_DO_RADAR_LOCAL";
+    "https://radar.metodoflow360.com.br/";
 
 
 /*
