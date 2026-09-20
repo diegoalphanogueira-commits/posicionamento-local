@@ -1,133 +1,1498 @@
-document.addEventListener("DOMContentLoaded", function () {
+/* =========================================================
+   POSICIONAMENTO LOCAL
+   LANDING → RADAR LOCAL
+   Busca inteligente com Geoapify
+========================================================= */
 
-    console.log("Posicionamento Local: JS carregado");
 
-    /* =========================
-       ANO
-    ========================= */
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
 
-    var year = document.getElementById("currentYear");
+const GEOAPIFY_API_KEY =
+    "COLE_SUA_CHAVE_AQUI";
+
+
+const RADAR_LOCAL_URL =
+    "https://diegoalphanogueira-commits.github.io/radar-local/";
+
+
+const AUTOCOMPLETE_DELAY =
+    450;
+
+
+const MIN_SEARCH_LENGTH =
+    3;
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let placeSearchTimer = null;
+
+let placeAbortController = null;
+
+let selectedPlace = null;
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        setCurrentYear();
+
+        setupMobileMenu();
+
+        setupPhoneMask();
+
+        setupPlaceAutocomplete();
+
+        setupDiagnosticForm();
+
+        setupSmoothMenuClose();
+
+    }
+);
+
+
+/* =========================================================
+   ANO
+========================================================= */
+
+function setCurrentYear() {
+
+    const year =
+        document.getElementById(
+            "currentYear"
+        );
+
 
     if (year) {
-        year.textContent = new Date().getFullYear();
+
+        year.textContent =
+            new Date()
+                .getFullYear();
+
+    }
+
+}
+
+
+/* =========================================================
+   MENU MOBILE
+========================================================= */
+
+function setupMobileMenu() {
+
+    const menuButton =
+        document.getElementById(
+            "menuToggle"
+        );
+
+
+    const mobileMenu =
+        document.getElementById(
+            "mobileMenu"
+        );
+
+
+    if (
+        !menuButton ||
+        !mobileMenu
+    ) {
+
+        return;
+
     }
 
 
-    /* =========================
-       MENU MOBILE
-    ========================= */
+    menuButton.addEventListener(
+        "click",
+        function () {
 
-    var menuButton = document.getElementById("menuToggle");
-    var mobileMenu = document.getElementById("mobileMenu");
+            const opened =
+                mobileMenu.classList
+                    .toggle(
+                        "active"
+                    );
 
-    if (menuButton && mobileMenu) {
 
-        menuButton.addEventListener("click", function () {
+            document.body.classList
+                .toggle(
+                    "menu-open",
+                    opened
+                );
 
-            mobileMenu.classList.toggle("active");
-
-            var opened =
-                mobileMenu.classList.contains("active");
 
             menuButton.setAttribute(
                 "aria-expanded",
-                opened ? "true" : "false"
+                opened
+                    ? "true"
+                    : "false"
             );
 
-        });
+        }
+    );
+
+}
 
 
-        var menuLinks =
-            mobileMenu.querySelectorAll("a");
+/* =========================================================
+   FECHAR MENU AO CLICAR
+========================================================= */
 
-        menuLinks.forEach(function (link) {
+function setupSmoothMenuClose() {
 
-            link.addEventListener("click", function () {
+    const mobileMenu =
+        document.getElementById(
+            "mobileMenu"
+        );
 
-                mobileMenu.classList.remove("active");
 
-                menuButton.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
+    const menuButton =
+        document.getElementById(
+            "menuToggle"
+        );
 
-            });
 
-        });
+    if (
+        !mobileMenu ||
+        !menuButton
+    ) {
+
+        return;
 
     }
 
 
-    /* =========================
-       WHATSAPP MASK
-    ========================= */
+    mobileMenu
+        .querySelectorAll("a")
+        .forEach(
+            function (link) {
 
-    var phoneInput =
-        document.getElementById("phone");
+                link.addEventListener(
+                    "click",
+                    function () {
 
-    if (phoneInput) {
-
-        phoneInput.addEventListener("input", function () {
-
-            var value =
-                phoneInput.value.replace(/\D/g, "");
-
-            value =
-                value.substring(0, 11);
+                        mobileMenu
+                            .classList
+                            .remove(
+                                "active"
+                            );
 
 
-            if (value.length > 10) {
+                        document.body
+                            .classList
+                            .remove(
+                                "menu-open"
+                            );
+
+
+                        menuButton
+                            .setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   MÁSCARA DO WHATSAPP
+========================================================= */
+
+function setupPhoneMask() {
+
+    const phoneInput =
+        document.getElementById(
+            "phone"
+        );
+
+
+    if (!phoneInput) {
+        return;
+    }
+
+
+    phoneInput.addEventListener(
+        "input",
+        function () {
+
+            let value =
+                phoneInput
+                    .value
+                    .replace(
+                        /\D/g,
+                        ""
+                    )
+                    .substring(
+                        0,
+                        11
+                    );
+
+
+            if (
+                value.length >
+                10
+            ) {
 
                 phoneInput.value =
                     "(" +
-                    value.substring(0, 2) +
+                    value.substring(
+                        0,
+                        2
+                    ) +
                     ") " +
-                    value.substring(2, 7) +
+                    value.substring(
+                        2,
+                        7
+                    ) +
                     "-" +
-                    value.substring(7, 11);
+                    value.substring(
+                        7,
+                        11
+                    );
+
+
+                return;
 
             }
 
-            else if (value.length > 6) {
+
+            if (
+                value.length >
+                6
+            ) {
 
                 phoneInput.value =
                     "(" +
-                    value.substring(0, 2) +
+                    value.substring(
+                        0,
+                        2
+                    ) +
                     ") " +
-                    value.substring(2, 6) +
+                    value.substring(
+                        2,
+                        6
+                    ) +
                     "-" +
-                    value.substring(6, 10);
+                    value.substring(
+                        6,
+                        10
+                    );
+
+
+                return;
 
             }
 
-            else if (value.length > 2) {
+
+            if (
+                value.length >
+                2
+            ) {
 
                 phoneInput.value =
                     "(" +
-                    value.substring(0, 2) +
+                    value.substring(
+                        0,
+                        2
+                    ) +
                     ") " +
                     value.substring(2);
 
+
+                return;
+
             }
 
-            else if (value.length > 0) {
+
+            if (
+                value.length >
+                0
+            ) {
 
                 phoneInput.value =
-                    "(" + value;
+                    "(" +
+                    value;
+
+
+                return;
 
             }
 
-        });
+
+            phoneInput.value = "";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   AUTOCOMPLETE GEOAPIFY
+========================================================= */
+
+function setupPlaceAutocomplete() {
+
+    const searchInput =
+        document.getElementById(
+            "placeSearch"
+        );
+
+
+    const suggestions =
+        document.getElementById(
+            "placeSuggestions"
+        );
+
+
+    const changeButton =
+        document.getElementById(
+            "changePlaceButton"
+        );
+
+
+    if (
+        !searchInput ||
+        !suggestions
+    ) {
+
+        return;
 
     }
 
 
-    /* =========================
-       FORMULÁRIO
-    ========================= */
+    searchInput.addEventListener(
+        "input",
+        function () {
 
-    var form =
-        document.getElementById("diagnosticForm");
+            const query =
+                searchInput
+                    .value
+                    .trim();
+
+
+            /*
+                Se a pessoa alterar
+                depois de selecionar,
+                removemos a seleção.
+            */
+
+            if (selectedPlace) {
+
+                clearSelectedPlace(
+                    false
+                );
+
+            }
+
+
+            clearTimeout(
+                placeSearchTimer
+            );
+
+
+            if (
+                query.length <
+                MIN_SEARCH_LENGTH
+            ) {
+
+                hideSuggestions();
+
+                setPlaceLoading(
+                    false
+                );
+
+                return;
+
+            }
+
+
+            placeSearchTimer =
+                setTimeout(
+                    function () {
+
+                        searchPlaces(
+                            query
+                        );
+
+                    },
+                    AUTOCOMPLETE_DELAY
+                );
+
+        }
+    );
+
+
+    if (changeButton) {
+
+        changeButton
+            .addEventListener(
+                "click",
+                function () {
+
+                    clearSelectedPlace(
+                        true
+                    );
+
+
+                    searchInput.focus();
+
+                }
+            );
+
+    }
+
+
+    /*
+        Fecha ao clicar
+        fora da busca.
+    */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const field =
+                searchInput.closest(
+                    ".place-search-field"
+                );
+
+
+            if (
+                field &&
+                !field.contains(
+                    event.target
+                )
+            ) {
+
+                hideSuggestions();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BUSCAR LOCAIS
+========================================================= */
+
+async function searchPlaces(
+    query
+) {
+
+    const suggestions =
+        document.getElementById(
+            "placeSuggestions"
+        );
+
+
+    if (
+        !suggestions
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !GEOAPIFY_API_KEY ||
+        GEOAPIFY_API_KEY.includes(
+            "COLE_SUA"
+        )
+    ) {
+
+        console.error(
+            "Configure sua chave do Geoapify em GEOAPIFY_API_KEY."
+        );
+
+        renderSearchMessage(
+            "Busca ainda não configurada."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Cancela busca anterior
+        caso a pessoa continue digitando.
+    */
+
+    if (
+        placeAbortController
+    ) {
+
+        placeAbortController
+            .abort();
+
+    }
+
+
+    placeAbortController =
+        new AbortController();
+
+
+    setPlaceLoading(
+        true
+    );
+
+
+    try {
+
+        const url =
+            new URL(
+                "https://api.geoapify.com/v1/geocode/autocomplete"
+            );
+
+
+        url.searchParams.set(
+            "text",
+            query
+        );
+
+
+        url.searchParams.set(
+            "format",
+            "json"
+        );
+
+
+        url.searchParams.set(
+            "filter",
+            "countrycode:br"
+        );
+
+
+        url.searchParams.set(
+            "lang",
+            "pt"
+        );
+
+
+        url.searchParams.set(
+            "limit",
+            "5"
+        );
+
+
+        url.searchParams.set(
+            "apiKey",
+            GEOAPIFY_API_KEY
+        );
+
+
+        const response =
+            await fetch(
+                url.toString(),
+                {
+                    signal:
+                        placeAbortController
+                            .signal
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                "Geoapify respondeu com status " +
+                response.status
+            );
+
+        }
+
+
+        const payload =
+            await response.json();
+
+
+        /*
+            Quando format=json,
+            normalmente temos results[].
+
+            Mantemos suporte também
+            ao formato GeoJSON.
+        */
+
+        let results = [];
+
+
+        if (
+            Array.isArray(
+                payload.results
+            )
+        ) {
+
+            results =
+                payload.results;
+
+        }
+
+        else if (
+            Array.isArray(
+                payload.features
+            )
+        ) {
+
+            results =
+                payload.features.map(
+                    function (feature) {
+
+                        return (
+                            feature.properties ||
+                            {}
+                        );
+
+                    }
+                );
+
+        }
+
+
+        renderPlaceSuggestions(
+            results
+        );
+
+    }
+
+    catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            return;
+
+        }
+
+
+        console.error(
+            "Erro no autocomplete:",
+            error
+        );
+
+
+        renderSearchMessage(
+            "Não foi possível buscar agora. Você ainda pode preencher os dados abaixo manualmente."
+        );
+
+    }
+
+    finally {
+
+        setPlaceLoading(
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDERIZAR SUGESTÕES
+========================================================= */
+
+function renderPlaceSuggestions(
+    results
+) {
+
+    const suggestions =
+        document.getElementById(
+            "placeSuggestions"
+        );
+
+
+    if (
+        !suggestions
+    ) {
+
+        return;
+
+    }
+
+
+    suggestions.innerHTML =
+        "";
+
+
+    if (
+        !results.length
+    ) {
+
+        renderSearchMessage(
+            "Nenhum local encontrado. Tente o endereço completo ou continue preenchendo manualmente."
+        );
+
+        return;
+
+    }
+
+
+    results.forEach(
+        function (place) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.className =
+                "place-suggestion";
+
+
+            const icon =
+                document.createElement(
+                    "span"
+                );
+
+
+            icon.className =
+                "place-suggestion-icon";
+
+
+            icon.textContent =
+                "◎";
+
+
+            const copy =
+                document.createElement(
+                    "span"
+                );
+
+
+            copy.className =
+                "place-suggestion-copy";
+
+
+            const title =
+                document.createElement(
+                    "strong"
+                );
+
+
+            title.textContent =
+                getPlaceTitle(
+                    place
+                );
+
+
+            const address =
+                document.createElement(
+                    "span"
+                );
+
+
+            address.textContent =
+                getPlaceAddress(
+                    place
+                );
+
+
+            copy.appendChild(
+                title
+            );
+
+
+            copy.appendChild(
+                address
+            );
+
+
+            button.appendChild(
+                icon
+            );
+
+
+            button.appendChild(
+                copy
+            );
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    selectPlace(
+                        place
+                    );
+
+                }
+            );
+
+
+            suggestions.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    suggestions
+        .classList
+        .remove(
+            "hidden"
+        );
+
+}
+
+
+/* =========================================================
+   TEXTO DO RESULTADO
+========================================================= */
+
+function getPlaceTitle(
+    place
+) {
+
+    return (
+        place.name ||
+        place.address_line1 ||
+        place.street ||
+        place.city ||
+        place.formatted ||
+        "Local encontrado"
+    );
+
+}
+
+
+function getPlaceAddress(
+    place
+) {
+
+    return (
+        place.formatted ||
+        [
+            place.address_line1,
+            place.address_line2
+        ]
+            .filter(Boolean)
+            .join(", ") ||
+        "Endereço identificado"
+    );
+
+}
+
+
+/* =========================================================
+   SELECIONAR LOCAL
+========================================================= */
+
+function selectPlace(
+    place
+) {
+
+    const searchInput =
+        document.getElementById(
+            "placeSearch"
+        );
+
+
+    const companyInput =
+        document.getElementById(
+            "company"
+        );
+
+
+    const regionInput =
+        document.getElementById(
+            "region"
+        );
+
+
+    const selectedCard =
+        document.getElementById(
+            "selectedPlaceCard"
+        );
+
+
+    const selectedName =
+        document.getElementById(
+            "selectedPlaceName"
+        );
+
+
+    const selectedAddress =
+        document.getElementById(
+            "selectedPlaceAddress"
+        );
+
+
+    const formattedAddress =
+        getPlaceAddress(
+            place
+        );
+
+
+    const city =
+        place.city ||
+        place.town ||
+        place.village ||
+        place.county ||
+        "";
+
+
+    const state =
+        place.state_code ||
+        place.state ||
+        "";
+
+
+    const regionText =
+        [
+            city,
+            state
+        ]
+            .filter(Boolean)
+            .join(" - ");
+
+
+    /*
+        Alguns resultados são apenas
+        rua/cidade.
+
+        Só usamos o name como empresa
+        quando parece ser um local real.
+    */
+
+    const nonBusinessTypes = [
+        "street",
+        "city",
+        "suburb",
+        "district",
+        "postcode",
+        "state",
+        "country"
+    ];
+
+
+    const hasBusinessName =
+        Boolean(
+            place.name
+        ) &&
+        !nonBusinessTypes.includes(
+            place.result_type
+        );
+
+
+    selectedPlace = {
+
+        name:
+            place.name ||
+            "",
+
+        address:
+            formattedAddress,
+
+        city,
+
+        state,
+
+        postcode:
+            place.postcode ||
+            "",
+
+        lat:
+            place.lat ??
+            "",
+
+        lon:
+            place.lon ??
+            "",
+
+        placeId:
+            place.place_id ||
+            "",
+
+        resultType:
+            place.result_type ||
+            ""
+
+    };
+
+
+    /*
+        Campo visual de busca
+    */
+
+    if (
+        searchInput
+    ) {
+
+        searchInput.value =
+            hasBusinessName
+
+                ? place.name
+
+                : (
+                    place.address_line1 ||
+                    formattedAddress
+                );
+
+    }
+
+
+    /*
+        Preenche nome da empresa
+        se o Geoapify identificou
+        um estabelecimento.
+    */
+
+    if (
+        companyInput &&
+        hasBusinessName
+    ) {
+
+        companyInput.value =
+            place.name;
+
+    }
+
+
+    /*
+        Preenche cidade/região.
+    */
+
+    if (
+        regionInput &&
+        regionText
+    ) {
+
+        regionInput.value =
+            regionText;
+
+    }
+
+
+    /*
+        Hidden fields
+    */
+
+    setInputValue(
+        "placeAddress",
+        formattedAddress
+    );
+
+
+    setInputValue(
+        "placeCity",
+        city
+    );
+
+
+    setInputValue(
+        "placeState",
+        state
+    );
+
+
+    setInputValue(
+        "placePostcode",
+        place.postcode ||
+        ""
+    );
+
+
+    setInputValue(
+        "placeLat",
+        place.lat ??
+        ""
+    );
+
+
+    setInputValue(
+        "placeLon",
+        place.lon ??
+        ""
+    );
+
+
+    setInputValue(
+        "placeId",
+        place.place_id ||
+        ""
+    );
+
+
+    /*
+        Card de confirmação
+    */
+
+    if (
+        selectedName
+    ) {
+
+        selectedName.textContent =
+            hasBusinessName
+                ? place.name
+                : (
+                    companyInput?.value ||
+                    "Local selecionado"
+                );
+
+    }
+
+
+    if (
+        selectedAddress
+    ) {
+
+        selectedAddress.textContent =
+            formattedAddress;
+
+    }
+
+
+    if (
+        selectedCard
+    ) {
+
+        selectedCard
+            .classList
+            .remove(
+                "hidden"
+            );
+
+    }
+
+
+    hideSuggestions();
+
+}
+
+
+/* =========================================================
+   LIMPAR LOCAL
+========================================================= */
+
+function clearSelectedPlace(
+    clearSearchInput
+) {
+
+    selectedPlace =
+        null;
+
+
+    const selectedCard =
+        document.getElementById(
+            "selectedPlaceCard"
+        );
+
+
+    if (
+        selectedCard
+    ) {
+
+        selectedCard
+            .classList
+            .add(
+                "hidden"
+            );
+
+    }
+
+
+    [
+        "placeAddress",
+        "placeCity",
+        "placeState",
+        "placePostcode",
+        "placeLat",
+        "placeLon",
+        "placeId"
+    ]
+        .forEach(
+            function (id) {
+
+                setInputValue(
+                    id,
+                    ""
+                );
+
+            }
+        );
+
+
+    if (
+        clearSearchInput
+    ) {
+
+        const input =
+            document.getElementById(
+                "placeSearch"
+            );
+
+
+        if (input) {
+
+            input.value =
+                "";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   HELPERS DA BUSCA
+========================================================= */
+
+function setInputValue(
+    id,
+    value
+) {
+
+    const input =
+        document.getElementById(
+            id
+        );
+
+
+    if (input) {
+
+        input.value =
+            value;
+
+    }
+
+}
+
+
+function hideSuggestions() {
+
+    const suggestions =
+        document.getElementById(
+            "placeSuggestions"
+        );
+
+
+    if (
+        suggestions
+    ) {
+
+        suggestions
+            .classList
+            .add(
+                "hidden"
+            );
+
+    }
+
+}
+
+
+function setPlaceLoading(
+    loading
+) {
+
+    const loader =
+        document.getElementById(
+            "placeSearchLoader"
+        );
+
+
+    if (!loader) {
+        return;
+    }
+
+
+    loader.classList.toggle(
+        "hidden",
+        !loading
+    );
+
+}
+
+
+function renderSearchMessage(
+    message
+) {
+
+    const suggestions =
+        document.getElementById(
+            "placeSuggestions"
+        );
+
+
+    if (
+        !suggestions
+    ) {
+
+        return;
+
+    }
+
+
+    suggestions.innerHTML =
+        "";
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.style.padding =
+        "15px 16px";
+
+
+    item.style.fontSize =
+        ".72rem";
+
+
+    item.style.lineHeight =
+        "1.5";
+
+
+    item.style.color =
+        "#7d8898";
+
+
+    item.textContent =
+        message;
+
+
+    suggestions.appendChild(
+        item
+    );
+
+
+    suggestions.classList
+        .remove(
+            "hidden"
+        );
+
+}
+
+
+/* =========================================================
+   ERROS DO FORMULÁRIO
+========================================================= */
+
+function clearFormErrors() {
+
+    document
+        .querySelectorAll(
+            ".input-error"
+        )
+        .forEach(
+            function (element) {
+
+                element.classList
+                    .remove(
+                        "input-error"
+                    );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".field-error"
+        )
+        .forEach(
+            function (element) {
+
+                element.remove();
+
+            }
+        );
+
+}
+
+
+function showFieldError(
+    input,
+    message
+) {
+
+    if (!input) {
+        return;
+    }
+
+
+    input.classList.add(
+        "input-error"
+    );
+
+
+    const error =
+        document.createElement(
+            "small"
+        );
+
+
+    error.className =
+        "field-error";
+
+
+    error.textContent =
+        message;
+
+
+    const container =
+        input.closest(
+            ".field"
+        ) ||
+        input.parentElement;
+
+
+    if (
+        container
+    ) {
+
+        container.appendChild(
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMULÁRIO PRINCIPAL
+========================================================= */
+
+function setupDiagnosticForm() {
+
+    const form =
+        document.getElementById(
+            "diagnosticForm"
+        );
 
 
     if (!form) {
@@ -141,158 +1506,585 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    form.addEventListener("submit", function (event) {
+    form.addEventListener(
+        "submit",
+        function (event) {
 
-        event.preventDefault();
-
-        console.log("Formulário interceptado com sucesso");
-
-
-        var company =
-            document
-                .getElementById("company")
-                .value
-                .trim();
+            event.preventDefault();
 
 
-        var segment =
-            document
-                .getElementById("segment")
-                .value
-                .trim();
+            clearFormErrors();
 
 
-        var region =
-            document
-                .getElementById("region")
-                .value
-                .trim();
+            const companyInput =
+                document.getElementById(
+                    "company"
+                );
 
 
-        var phone =
-            document
-                .getElementById("phone")
-                .value
-                .replace(/\D/g, "");
+            const segmentInput =
+                document.getElementById(
+                    "segment"
+                );
 
 
-        if (!company) {
+            const regionInput =
+                document.getElementById(
+                    "region"
+                );
 
-            alert("Informe o nome da empresa.");
 
-            return;
+            const phoneInput =
+                document.getElementById(
+                    "phone"
+                );
+
+
+            const company =
+                companyInput
+                    ?.value
+                    .trim() ||
+                "";
+
+
+            const segment =
+                segmentInput
+                    ?.value
+                    .trim() ||
+                "";
+
+
+            const region =
+                regionInput
+                    ?.value
+                    .trim() ||
+                "";
+
+
+            const phone =
+                (
+                    phoneInput
+                        ?.value ||
+                    ""
+                )
+                    .replace(
+                        /\D/g,
+                        ""
+                    );
+
+
+            let valid =
+                true;
+
+
+            if (
+                !company
+            ) {
+
+                showFieldError(
+                    companyInput,
+                    "Informe o nome da empresa."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !segment
+            ) {
+
+                showFieldError(
+                    segmentInput,
+                    "Selecione o segmento."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !region
+            ) {
+
+                showFieldError(
+                    regionInput,
+                    "Informe sua cidade ou região."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                phone.length <
+                10
+            ) {
+
+                showFieldError(
+                    phoneInput,
+                    "Informe um WhatsApp válido."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !valid
+            ) {
+
+                const firstError =
+                    document.querySelector(
+                        ".input-error"
+                    );
+
+
+                firstError
+                    ?.focus();
+
+
+                return;
+
+            }
+
+
+            redirectToRadar({
+
+                company,
+
+                segment,
+
+                region,
+
+                phone
+
+            });
 
         }
+    );
+
+}
 
 
-        if (!segment) {
+/* =========================================================
+   REDIRECIONAR PARA RADAR
+========================================================= */
 
-            alert("Informe o segmento.");
+function redirectToRadar({
+    company,
+    segment,
+    region,
+    phone
+}) {
 
-            return;
-
-        }
-
-
-        if (!region) {
-
-            alert("Informe sua cidade ou região.");
-
-            return;
-
-        }
-
-
-        if (phone.length < 10) {
-
-            alert("Informe um WhatsApp válido.");
-
-            return;
-
-        }
-
-
-        /* =========================
-           BOTÃO CARREGANDO
-        ========================= */
-
-        var button =
-            form.querySelector(
-                'button[type="submit"]'
-            );
-
-
-        if (button) {
-
-            button.disabled = true;
-
-            button.innerHTML =
-                "Analisando sua região...";
-
-        }
-
-
-        /* =========================
-           URL RADAR LOCAL
-        ========================= */
-
-        var radarUrl =
-            "https://diegoalphanogueira-commits.github.io/radar-local/";
-
-
-        var params =
-            new URLSearchParams();
-
-
-        params.set(
-            "empresa",
-            company
+    const form =
+        document.getElementById(
+            "diagnosticForm"
         );
 
 
-        params.set(
-            "segmento",
-            segment
+    const button =
+        form?.querySelector(
+            'button[type="submit"]'
         );
 
 
-        params.set(
-            "regiao",
-            region
+    const originalButtonHTML =
+        button?.innerHTML ||
+        "";
+
+
+    if (
+        button
+    ) {
+
+        button.disabled =
+            true;
+
+
+        button.innerHTML =
+            `
+                <span>
+                    Preparando sua análise...
+                </span>
+            `;
+
+    }
+
+
+    const address =
+        document
+            .getElementById(
+                "placeAddress"
+            )
+            ?.value
+            .trim() ||
+        "";
+
+
+    const city =
+        document
+            .getElementById(
+                "placeCity"
+            )
+            ?.value
+            .trim() ||
+        "";
+
+
+    const state =
+        document
+            .getElementById(
+                "placeState"
+            )
+            ?.value
+            .trim() ||
+        "";
+
+
+    const postcode =
+        document
+            .getElementById(
+                "placePostcode"
+            )
+            ?.value
+            .trim() ||
+        "";
+
+
+    const lat =
+        document
+            .getElementById(
+                "placeLat"
+            )
+            ?.value ||
+        "";
+
+
+    const lon =
+        document
+            .getElementById(
+                "placeLon"
+            )
+            ?.value ||
+        "";
+
+
+    const placeId =
+        document
+            .getElementById(
+                "placeId"
+            )
+            ?.value ||
+        "";
+
+
+    /*
+        Salva localmente antes
+        do redirecionamento.
+    */
+
+    const leadData = {
+
+        empresa:
+            company,
+
+        segmento:
+            segment,
+
+        regiao:
+            region,
+
+        telefone:
+            phone,
+
+        endereco:
+            address,
+
+        cidade:
+            city,
+
+        estado:
+            state,
+
+        cep:
+            postcode,
+
+        lat,
+
+        lon,
+
+        placeId,
+
+        origem:
+            "posicionamento-local",
+
+        timestamp:
+            new Date()
+                .toISOString()
+
+    };
+
+
+    try {
+
+        localStorage.setItem(
+            "radarLocalLead",
+            JSON.stringify(
+                leadData
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "Não foi possível salvar o lead localmente.",
+            error
+        );
+
+    }
+
+
+    /*
+        Monta URL do Radar.
+    */
+
+    const destination =
+        new URL(
+            RADAR_LOCAL_URL
         );
 
 
-        params.set(
-            "telefone",
-            phone
+    destination.searchParams.set(
+        "empresa",
+        company
+    );
+
+
+    destination.searchParams.set(
+        "segmento",
+        segment
+    );
+
+
+    destination.searchParams.set(
+        "regiao",
+        region
+    );
+
+
+    destination.searchParams.set(
+        "telefone",
+        phone
+    );
+
+
+    destination.searchParams.set(
+        "origem",
+        "posicionamento-local"
+    );
+
+
+    /*
+        Só envia dados estruturados
+        se o local foi selecionado.
+    */
+
+    if (
+        address
+    ) {
+
+        destination.searchParams.set(
+            "endereco",
+            address
         );
 
+    }
 
-        params.set(
-            "origem",
-            "posicionamento-local"
+
+    if (
+        city
+    ) {
+
+        destination.searchParams.set(
+            "cidade",
+            city
         );
 
-
-        var destination =
-            radarUrl +
-            "?" +
-            params.toString();
+    }
 
 
-        console.log(
-            "Abrindo:",
-            destination
+    if (
+        state
+    ) {
+
+        destination.searchParams.set(
+            "estado",
+            state
         );
 
+    }
 
-        setTimeout(function () {
+
+    if (
+        postcode
+    ) {
+
+        destination.searchParams.set(
+            "cep",
+            postcode
+        );
+
+    }
+
+
+    if (
+        lat
+    ) {
+
+        destination.searchParams.set(
+            "lat",
+            lat
+        );
+
+    }
+
+
+    if (
+        lon
+    ) {
+
+        destination.searchParams.set(
+            "lon",
+            lon
+        );
+
+    }
+
+
+    if (
+        placeId
+    ) {
+
+        destination.searchParams.set(
+            "place_id",
+            placeId
+        );
+
+    }
+
+
+    copyTrackingParameters(
+        destination
+    );
+
+
+    setTimeout(
+        function () {
 
             window.location.href =
-                destination;
+                destination.toString();
 
-        }, 500);
+        },
+        500
+    );
 
-    });
 
-});
+    /*
+        Segurança caso o browser
+        bloqueie a navegação.
+    */
+
+    setTimeout(
+        function () {
+
+            if (
+                button
+            ) {
+
+                button.disabled =
+                    false;
+
+
+                button.innerHTML =
+                    originalButtonHTML;
+
+            }
+
+        },
+        5000
+    );
+
+}
+
+
+/* =========================================================
+   UTM / TRACKING
+========================================================= */
+
+function copyTrackingParameters(
+    destination
+) {
+
+    const currentParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const parameters = [
+
+        "utm_source",
+
+        "utm_medium",
+
+        "utm_campaign",
+
+        "utm_content",
+
+        "utm_term",
+
+        "fbclid",
+
+        "gclid"
+
+    ];
+
+
+    parameters.forEach(
+        function (parameter) {
+
+            const value =
+                currentParams.get(
+                    parameter
+                );
+
+
+            if (
+                value
+            ) {
+
+                destination
+                    .searchParams
+                    .set(
+                        parameter,
+                        value
+                    );
+
+            }
+
+        }
+    );
+
+}
