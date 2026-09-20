@@ -1782,75 +1782,113 @@
          3. SEGMENTO
     ====================================================== -->
 
-   <div class="field">
+   <!-- =====================================================
+     SEGMENTO
+====================================================== -->
+
+<div class="field segment-field">
 
     <label for="segment">
         Segmento
     </label>
 
-    <select
-        id="segment"
-        name="segment"
-        required
+    <div class="select-wrapper">
+
+        <select
+            id="segment"
+            name="segment"
+            required
+        >
+
+            <option value="">
+                Selecione seu segmento
+            </option>
+
+            <option value="estetica">
+                Clínica de estética
+            </option>
+
+            <option value="podologia">
+                Podologia
+            </option>
+
+            <option value="odontologia">
+                Clínica odontológica / Dentista
+            </option>
+
+            <option value="beleza">
+                Salão de beleza
+            </option>
+
+            <option value="beleza">
+                Barbearia
+            </option>
+
+            <option value="beleza">
+                Manicure / Nail Designer
+            </option>
+
+            <option value="beleza">
+                Cílios / Sobrancelhas
+            </option>
+
+            <option value="energia-solar">
+                Energia solar
+            </option>
+
+            <option value="assistencia">
+                Assistência técnica
+            </option>
+
+            <option value="vidracaria">
+                Vidraçaria
+            </option>
+
+            <option value="limpeza">
+                Limpeza de estofados
+            </option>
+
+            <option value="seguros">
+                Corretora de seguros
+            </option>
+
+            <option value="advocacia">
+                Advocacia
+            </option>
+
+            <option value="outro">
+                Outro segmento
+            </option>
+
+        </select>
+
+        <span class="select-arrow">
+            ↓
+        </span>
+
+    </div>
+
+
+    <!-- APARECE SOMENTE QUANDO ESCOLHER OUTRO -->
+
+    <div
+        id="customSegmentField"
+        class="custom-segment-field hidden"
     >
 
-        <option value="">
-            Selecione seu segmento
-        </option>
+        <label for="customSegment">
+            Qual é o seu segmento?
+        </label>
 
-        <option value="estetica">
-            Clínica de estética
-        </option>
+        <input
+            type="text"
+            id="customSegment"
+            name="customSegment"
+            placeholder="Ex.: Imobiliária, Contabilidade, Personal Trainer..."
+            autocomplete="off"
+        >
 
-        <option value="podologia">
-            Podologia
-        </option>
-
-        <option value="odontologia">
-            Clínica odontológica / Dentista
-        </option>
-
-        <option value="beleza">
-            Salão de beleza
-        </option>
-
-        <option value="beleza">
-            Barbearia
-        </option>
-
-        <option value="beleza">
-            Manicure / Nail Designer
-        </option>
-
-        <option value="beleza">
-            Cílios / Sobrancelhas
-        </option>
-
-        <option value="energia-solar">
-            Energia solar
-        </option>
-
-        <option value="assistencia">
-            Assistência técnica
-        </option>
-
-        <option value="vidracaria">
-            Vidraçaria
-        </option>
-
-        <option value="limpeza">
-            Limpeza de estofados
-        </option>
-
-        <option value="seguros">
-            Corretora de seguros
-        </option>
-
-        <option value="advocacia">
-            Advocacia
-        </option>
-
-    </select>
+    </div>
 
 </div>
 
