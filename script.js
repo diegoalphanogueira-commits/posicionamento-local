@@ -1,3 +1,5 @@
+alert("JS carregou");
+
 /* =========================================================
    POSICIONAMENTO LOCAL
    Integração com Radar Local
