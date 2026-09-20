@@ -533,7 +533,48 @@ async function searchPlaces(
 
 
     /*
-        Cancela busca anterior
+        Primeiro pegamos a cidade/região
+        informada no formulário.
+    */
+
+    const regionInput =
+        document.getElementById(
+            "region"
+        );
+
+
+    const region =
+        regionInput
+            ?.value
+            .trim() ||
+        "";
+
+
+    /*
+        Se não houver cidade/região,
+        não fazemos busca nacional.
+        Pedimos primeiro a localização.
+    */
+
+    if (
+        !region
+    ) {
+
+        renderSearchMessage(
+            "Informe primeiro sua cidade ou região para encontrarmos resultados próximos."
+        );
+
+        setPlaceLoading(
+            false
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Cancela uma busca anterior
         caso a pessoa continue digitando.
     */
 
@@ -564,26 +605,23 @@ async function searchPlaces(
             );
 
 
-        const regionInput =
-    document.getElementById(
-        "region"
-    );
+        /*
+            A cidade/região entra como
+            contexto da pesquisa.
 
-const region =
-    regionInput
-        ?.value
-        .trim() ||
-    "";
+            Exemplo:
 
-const searchText =
-    region
-        ? `${query}, ${region}, Brasil`
-        : `${query}, Brasil`;
+            Rua Waldemar..., Guarulhos - SP, Brasil
+        */
 
-url.searchParams.set(
-    "text",
-    searchText
-);
+        const searchText =
+            `${query}, ${region}, Brasil`;
+
+
+        url.searchParams.set(
+            "text",
+            searchText
+        );
 
 
         url.searchParams.set(
@@ -591,6 +629,11 @@ url.searchParams.set(
             "json"
         );
 
+
+        /*
+            Mantém resultados somente
+            dentro do Brasil.
+        */
 
         url.searchParams.set(
             "filter",
@@ -613,6 +656,12 @@ url.searchParams.set(
         url.searchParams.set(
             "apiKey",
             GEOAPIFY_API_KEY
+        );
+
+
+        console.log(
+            "Buscando local:",
+            searchText
         );
 
 
@@ -647,8 +696,8 @@ url.searchParams.set(
             Quando format=json,
             normalmente temos results[].
 
-            Mantemos suporte também
-            ao formato GeoJSON.
+            Mantemos compatibilidade
+            também com GeoJSON/features.
         */
 
         let results = [];
@@ -686,8 +735,82 @@ url.searchParams.set(
         }
 
 
+        /*
+            Priorizamos resultados
+            relacionados à cidade digitada.
+        */
+
+        const normalizedRegion =
+            normalizeSearchText(
+                region
+            );
+
+
+        const sortedResults =
+            [...results]
+                .sort(
+                    function (
+                        a,
+                        b
+                    ) {
+
+                        const aText =
+                            normalizeSearchText(
+                                [
+                                    a.city,
+                                    a.town,
+                                    a.village,
+                                    a.county,
+                                    a.state,
+                                    a.formatted
+                                ]
+                                    .filter(Boolean)
+                                    .join(" ")
+                            );
+
+
+                        const bText =
+                            normalizeSearchText(
+                                [
+                                    b.city,
+                                    b.town,
+                                    b.village,
+                                    b.county,
+                                    b.state,
+                                    b.formatted
+                                ]
+                                    .filter(Boolean)
+                                    .join(" ")
+                            );
+
+
+                        const aMatches =
+                            aText.includes(
+                                normalizedRegion
+                            )
+                                ? 1
+                                : 0;
+
+
+                        const bMatches =
+                            bText.includes(
+                                normalizedRegion
+                            )
+                                ? 1
+                                : 0;
+
+
+                        return (
+                            bMatches -
+                            aMatches
+                        );
+
+                    }
+                );
+
+
         renderPlaceSuggestions(
-            results
+            sortedResults
         );
 
     }
@@ -726,6 +849,29 @@ url.searchParams.set(
 
 }
 
+
+/* =========================================================
+   NORMALIZAR TEXTO PARA COMPARAÇÃO
+========================================================= */
+
+function normalizeSearchText(
+    value
+) {
+
+    return String(
+        value || ""
+    )
+        .normalize(
+            "NFD"
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .trim();
+
+}
 
 /* =========================================================
    RENDERIZAR SUGESTÕES
