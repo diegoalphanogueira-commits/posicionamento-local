@@ -3566,3 +3566,130 @@ button {
     }
 
 }
+
+/* =========================================================
+   CORREÇÃO — AUTOCOMPLETE CIDADE
+========================================================= */
+
+.region-search-field {
+    position: relative;
+    z-index: 50;
+}
+
+.region-search-field .place-search-wrapper {
+    position: relative;
+}
+
+.region-search-field .place-suggestions {
+    position: absolute;
+
+    top: calc(100% - 1px);
+    left: 0;
+    right: 0;
+
+    z-index: 9999;
+
+    max-height: 280px;
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 0 0 16px 16px;
+
+    box-shadow:
+        0 18px 45px
+        rgba(32, 45, 68, 0.16);
+}
+
+
+/* GARANTE QUE O DROPDOWN NÃO SEJA CORTADO */
+
+.diagnostic-section,
+.diagnostic-card,
+.diagnostic-form {
+    overflow: visible !important;
+}
+
+
+/* RESULTADOS */
+
+.region-search-field .place-suggestion {
+    position: relative;
+
+    width: 100%;
+
+    padding: 14px 16px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    border: 0;
+    border-bottom: 1px solid #edf0f4;
+
+    background: #ffffff;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.region-search-field .place-suggestion:last-child {
+    border-bottom: 0;
+}
+
+.region-search-field .place-suggestion:hover {
+    background: #f5f8fd;
+}
+
+.region-search-field .place-suggestion-icon {
+
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    color: #2878f0;
+
+    background: #eaf2ff;
+
+    font-weight: 800;
+}
+
+.region-search-field .place-suggestion-copy {
+    min-width: 0;
+}
+
+.region-search-field .place-suggestion-copy strong {
+
+    display: block;
+
+    color: #202124;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+}
+
+.region-search-field .place-suggestion-copy span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #7d8898;
+
+    font-size: 0.65rem;
+
+    line-height: 1.4;
+}
