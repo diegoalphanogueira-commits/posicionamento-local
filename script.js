@@ -31,6 +31,15 @@ let cityAbortController = null;
 
 let selectedCity = null;
 
+/* =========================================================
+   BUSCA DA EMPRESA / ENDEREÇO
+========================================================= */
+
+let businessSearchTimer = null;
+
+let businessAbortController = null;
+
+let selectedBusiness = null;
 
 /* =========================================================
    INICIALIZAÇÃO
@@ -49,6 +58,8 @@ document.addEventListener(
         setupPhoneMask();
 
         setupCityAutocomplete();
+
+       setupBusinessAutocomplete();
 
         setupDiagnosticForm();
 
@@ -1337,7 +1348,1261 @@ function showError(
 
 }
 
+/* =========================================================
+   AUTOCOMPLETE DA EMPRESA / ENDEREÇO
+========================================================= */
 
+function setupBusinessAutocomplete() {
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    const suggestions =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (
+        !input ||
+        !suggestions
+    ) {
+
+        return;
+
+    }
+
+
+    input.addEventListener(
+        "input",
+        function () {
+
+            const query =
+                input.value
+                    .trim();
+
+
+            selectedBusiness =
+                null;
+
+
+            clearTimeout(
+                businessSearchTimer
+            );
+
+
+            if (
+                query.length < 2
+            ) {
+
+                hideBusinessSuggestions();
+
+                setBusinessLoading(
+                    false
+                );
+
+                return;
+
+            }
+
+
+            /*
+                Não procura empresa
+                antes de selecionar a cidade.
+            */
+
+            if (
+                !selectedCity
+            ) {
+
+                renderBusinessMessage(
+                    "Selecione primeiro sua cidade ou região."
+                );
+
+                return;
+
+            }
+
+
+            businessSearchTimer =
+                setTimeout(
+                    function () {
+
+                        searchBusinessesGeoapify(
+                            query
+                        );
+
+                    },
+                    400
+                );
+
+        }
+    );
+
+
+    /*
+        Botão ALTERAR
+    */
+
+    const changeButton =
+        document.getElementById(
+            "changeBusinessButton"
+        );
+
+
+    if (
+        changeButton
+    ) {
+
+        changeButton.addEventListener(
+            "click",
+            function () {
+
+                clearSelectedBusiness();
+
+                input.focus();
+
+            }
+        );
+
+    }
+
+
+    /*
+        Fecha sugestões ao clicar fora.
+    */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const field =
+                input.closest(
+                    ".business-search-field"
+                );
+
+
+            if (
+                field &&
+                !field.contains(
+                    event.target
+                )
+            ) {
+
+                hideBusinessSuggestions();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BUSCAR EMPRESA / ENDEREÇO NO GEOAPIFY
+========================================================= */
+
+async function searchBusinessesGeoapify(
+    query
+) {
+
+    if (
+        !GEOAPIFY_API_KEY ||
+        GEOAPIFY_API_KEY.includes(
+            "COLE_SUA"
+        )
+    ) {
+
+        renderBusinessMessage(
+            "Busca ainda não configurada."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !selectedCity
+    ) {
+
+        renderBusinessMessage(
+            "Selecione primeiro sua cidade."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        businessAbortController
+    ) {
+
+        businessAbortController
+            .abort();
+
+    }
+
+
+    businessAbortController =
+        new AbortController();
+
+
+    setBusinessLoading(
+        true
+    );
+
+
+    try {
+
+        const url =
+            new URL(
+                "https://api.geoapify.com/v1/geocode/autocomplete"
+            );
+
+
+        /*
+            Colocamos a cidade dentro
+            do próprio texto da busca.
+        */
+
+        const searchText =
+            [
+                query,
+                selectedCity.name,
+                selectedCity.stateCode,
+                "Brasil"
+            ]
+                .filter(Boolean)
+                .join(", ");
+
+
+        url.searchParams.set(
+            "text",
+            searchText
+        );
+
+
+        url.searchParams.set(
+            "format",
+            "json"
+        );
+
+
+        url.searchParams.set(
+            "filter",
+            "countrycode:br"
+        );
+
+
+        /*
+            Priorizamos resultados perto
+            da cidade selecionada.
+        */
+
+        if (
+            selectedCity.lat &&
+            selectedCity.lon
+        ) {
+
+            url.searchParams.set(
+                "bias",
+                `proximity:${selectedCity.lon},${selectedCity.lat}`
+            );
+
+        }
+
+
+        url.searchParams.set(
+            "lang",
+            "pt"
+        );
+
+
+        url.searchParams.set(
+            "limit",
+            "8"
+        );
+
+
+        url.searchParams.set(
+            "apiKey",
+            GEOAPIFY_API_KEY
+        );
+
+
+        const response =
+            await fetch(
+                url.toString(),
+                {
+                    signal:
+                        businessAbortController
+                            .signal
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                "Geoapify respondeu com status " +
+                response.status
+            );
+
+        }
+
+
+        const payload =
+            await response.json();
+
+
+        let results = [];
+
+
+        /*
+            Suporte aos dois formatos
+            possíveis do Geoapify.
+        */
+
+        if (
+            Array.isArray(
+                payload.results
+            )
+        ) {
+
+            results =
+                payload.results;
+
+        }
+
+        else if (
+            Array.isArray(
+                payload.features
+            )
+        ) {
+
+            results =
+                payload.features.map(
+                    function (feature) {
+
+                        const properties =
+                            feature.properties ||
+                            {};
+
+
+                        if (
+                            feature.geometry &&
+                            Array.isArray(
+                                feature.geometry.coordinates
+                            )
+                        ) {
+
+                            properties.lon =
+                                properties.lon ??
+                                feature.geometry.coordinates[0];
+
+
+                            properties.lat =
+                                properties.lat ??
+                                feature.geometry.coordinates[1];
+
+                        }
+
+
+                        return properties;
+
+                    }
+                );
+
+        }
+
+
+        /*
+            Coloca estabelecimentos
+            e locais nomeados primeiro.
+        */
+
+        results =
+            results.sort(
+                function (
+                    a,
+                    b
+                ) {
+
+                    return (
+                        getBusinessResultScore(b) -
+                        getBusinessResultScore(a)
+                    );
+
+                }
+            );
+
+
+        console.log(
+            "Resultados Geoapify empresa:",
+            results
+        );
+
+
+        renderBusinessSuggestions(
+            results.slice(
+                0,
+                5
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            return;
+
+        }
+
+
+        console.error(
+            "Erro ao buscar estabelecimento:",
+            error
+        );
+
+
+        renderBusinessMessage(
+            "Não foi possível localizar o estabelecimento agora."
+        );
+
+    }
+
+    finally {
+
+        setBusinessLoading(
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRIORIZAR MELHORES RESULTADOS
+========================================================= */
+
+function getBusinessResultScore(
+    place
+) {
+
+    let score =
+        0;
+
+
+    if (
+        place.result_type ===
+        "amenity"
+    ) {
+
+        score +=
+            100;
+
+    }
+
+
+    if (
+        place.name
+    ) {
+
+        score +=
+            70;
+
+    }
+
+
+    if (
+        place.result_type ===
+        "building"
+    ) {
+
+        score +=
+            40;
+
+    }
+
+
+    const resultCity =
+        normalizeText(
+            place.city ||
+            place.town ||
+            place.village ||
+            ""
+        );
+
+
+    const selectedCityName =
+        normalizeText(
+            selectedCity?.name ||
+            ""
+        );
+
+
+    if (
+        resultCity &&
+        selectedCityName &&
+        resultCity ===
+            selectedCityName
+    ) {
+
+        score +=
+            60;
+
+    }
+
+
+    if (
+        place.rank &&
+        typeof place.rank.confidence ===
+            "number"
+    ) {
+
+        score +=
+            place.rank.confidence *
+            20;
+
+    }
+
+
+    return score;
+
+}
+
+
+/* =========================================================
+   RENDERIZAR RESULTADOS
+========================================================= */
+
+function renderBusinessSuggestions(
+    results
+) {
+
+    const container =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (
+        !container
+    ) {
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    if (
+        !results.length
+    ) {
+
+        renderBusinessMessage(
+            "Nenhum estabelecimento ou endereço encontrado."
+        );
+
+        return;
+
+    }
+
+
+    results.forEach(
+        function (place) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.className =
+                "place-suggestion";
+
+
+            const icon =
+                document.createElement(
+                    "span"
+                );
+
+
+            icon.className =
+                "place-suggestion-icon";
+
+
+            icon.textContent =
+                "◎";
+
+
+            const copy =
+                document.createElement(
+                    "span"
+                );
+
+
+            copy.className =
+                "place-suggestion-copy";
+
+
+            const title =
+                document.createElement(
+                    "strong"
+                );
+
+
+            /*
+                Quando Geoapify conhece
+                o nome do estabelecimento,
+                mostramos o nome.
+
+                Caso contrário,
+                mostramos o endereço principal.
+            */
+
+            title.textContent =
+                place.name ||
+                place.address_line1 ||
+                place.formatted ||
+                "Local encontrado";
+
+
+            const subtitle =
+                document.createElement(
+                    "span"
+                );
+
+
+            subtitle.textContent =
+                place.formatted ||
+                [
+                    place.city,
+                    place.state
+                ]
+                    .filter(Boolean)
+                    .join(" - ");
+
+
+            copy.appendChild(
+                title
+            );
+
+
+            copy.appendChild(
+                subtitle
+            );
+
+
+            button.appendChild(
+                icon
+            );
+
+
+            button.appendChild(
+                copy
+            );
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    selectBusinessGeoapify(
+                        place
+                    );
+
+                }
+            );
+
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    container.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================================
+   SELECIONAR ESTABELECIMENTO
+========================================================= */
+
+function selectBusinessGeoapify(
+    place
+) {
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    /*
+        Guardamos exatamente o que
+        o usuário digitou para usar
+        como fallback caso o Geoapify
+        não tenha nome comercial.
+    */
+
+    const typedQuery =
+        input
+            ?.value
+            .trim() ||
+        "";
+
+
+    const realName =
+        place.name ||
+        "";
+
+
+    selectedBusiness = {
+
+        placeId:
+            place.place_id ||
+            "",
+
+        name:
+            realName ||
+            typedQuery,
+
+        officialName:
+            realName,
+
+        address:
+            place.formatted ||
+            "",
+
+        lat:
+            place.lat ??
+            "",
+
+        lon:
+            place.lon ??
+            "",
+
+        city:
+            place.city ||
+            selectedCity?.name ||
+            "",
+
+        state:
+            place.state ||
+            selectedCity?.state ||
+            "",
+
+        stateCode:
+            place.state_code ||
+            selectedCity?.stateCode ||
+            "",
+
+        postcode:
+            place.postcode ||
+            "",
+
+        category:
+            formatGeoapifyCategory(
+                place.category
+            ),
+
+        resultType:
+            place.result_type ||
+            ""
+
+    };
+
+
+    fillBusinessHiddenFields();
+
+
+    renderSelectedBusiness();
+
+
+    hideBusinessSuggestions();
+
+}
+
+
+/* =========================================================
+   PREENCHER DADOS INVISÍVEIS
+========================================================= */
+
+function fillBusinessHiddenFields() {
+
+    if (
+        !selectedBusiness
+    ) {
+
+        return;
+
+    }
+
+
+    setInputValue(
+        "businessPlaceId",
+        selectedBusiness.placeId
+    );
+
+
+    setInputValue(
+        "businessName",
+        selectedBusiness.name
+    );
+
+
+    setInputValue(
+        "businessAddress",
+        selectedBusiness.address
+    );
+
+
+    setInputValue(
+        "businessLat",
+        selectedBusiness.lat
+    );
+
+
+    setInputValue(
+        "businessLon",
+        selectedBusiness.lon
+    );
+
+
+    /*
+        Geoapify não fornece
+        avaliações do Google.
+
+        Mantemos vazios.
+    */
+
+    setInputValue(
+        "businessRating",
+        ""
+    );
+
+
+    setInputValue(
+        "businessRatingCount",
+        ""
+    );
+
+
+    setInputValue(
+        "businessType",
+        selectedBusiness.category ||
+        selectedBusiness.resultType
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR CARD DO LOCAL
+========================================================= */
+
+function renderSelectedBusiness() {
+
+    if (
+        !selectedBusiness
+    ) {
+
+        return;
+
+    }
+
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    const card =
+        document.getElementById(
+            "selectedBusinessCard"
+        );
+
+
+    const name =
+        document.getElementById(
+            "selectedBusinessName"
+        );
+
+
+    const address =
+        document.getElementById(
+            "selectedBusinessAddress"
+        );
+
+
+    const meta =
+        document.getElementById(
+            "selectedBusinessMeta"
+        );
+
+
+    if (
+        name
+    ) {
+
+        name.textContent =
+            selectedBusiness.name;
+
+    }
+
+
+    if (
+        address
+    ) {
+
+        address.textContent =
+            selectedBusiness.address ||
+            "Endereço identificado";
+
+    }
+
+
+    if (
+        meta
+    ) {
+
+        const parts =
+            [];
+
+
+        if (
+            selectedBusiness.category
+        ) {
+
+            parts.push(
+                selectedBusiness.category
+            );
+
+        }
+
+
+        if (
+            selectedBusiness.city
+        ) {
+
+            parts.push(
+                selectedBusiness.city
+            );
+
+        }
+
+
+        meta.textContent =
+            parts.join(
+                " · "
+            );
+
+    }
+
+
+    if (
+        input
+    ) {
+
+        input.value =
+            selectedBusiness.name;
+
+
+        input
+            .closest(
+                ".place-search-wrapper"
+            )
+            ?.classList
+            .add(
+                "hidden"
+            );
+
+    }
+
+
+    if (
+        card
+    ) {
+
+        card.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ALTERAR LOCAL
+========================================================= */
+
+function clearSelectedBusiness() {
+
+    selectedBusiness =
+        null;
+
+
+    const input =
+        document.getElementById(
+            "businessQuery"
+        );
+
+
+    const card =
+        document.getElementById(
+            "selectedBusinessCard"
+        );
+
+
+    if (
+        input
+    ) {
+
+        input.value =
+            "";
+
+
+        input
+            .closest(
+                ".place-search-wrapper"
+            )
+            ?.classList
+            .remove(
+                "hidden"
+            );
+
+    }
+
+
+    if (
+        card
+    ) {
+
+        card.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    [
+        "businessPlaceId",
+        "businessName",
+        "businessAddress",
+        "businessLat",
+        "businessLon",
+        "businessRating",
+        "businessRatingCount",
+        "businessType"
+    ]
+        .forEach(
+            function (id) {
+
+                setInputValue(
+                    id,
+                    ""
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   FORMATAR CATEGORIA
+========================================================= */
+
+function formatGeoapifyCategory(
+    category
+) {
+
+    let value =
+        category;
+
+
+    if (
+        Array.isArray(
+            category
+        )
+    ) {
+
+        value =
+            category[0];
+
+    }
+
+
+    if (
+        !value
+    ) {
+
+        return "";
+
+    }
+
+
+    const finalPart =
+        String(
+            value
+        )
+            .split(".")
+            .pop()
+            .replace(
+                /_/g,
+                " "
+            );
+
+
+    return finalPart
+        .charAt(0)
+        .toUpperCase() +
+        finalPart.slice(1);
+
+}
+
+
+/* =========================================================
+   HELPERS DA BUSCA DA EMPRESA
+========================================================= */
+
+function hideBusinessSuggestions() {
+
+    const container =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (
+        container
+    ) {
+
+        container.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+function setBusinessLoading(
+    loading
+) {
+
+    const loader =
+        document.getElementById(
+            "businessSearchLoader"
+        );
+
+
+    if (
+        !loader
+    ) {
+
+        return;
+
+    }
+
+
+    loader.classList.toggle(
+        "hidden",
+        !loading
+    );
+
+}
+
+
+function renderBusinessMessage(
+    message
+) {
+
+    const container =
+        document.getElementById(
+            "businessSuggestions"
+        );
+
+
+    if (
+        !container
+    ) {
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.style.padding =
+        "15px 16px";
+
+
+    item.style.fontSize =
+        ".72rem";
+
+
+    item.style.lineHeight =
+        "1.5";
+
+
+    item.style.color =
+        "#7d8898";
+
+
+    item.textContent =
+        message;
+
+
+    container.appendChild(
+        item
+    );
+
+
+    container.classList.remove(
+        "hidden"
+    );
+
+}
 
 /* =========================================================
    FORMULÁRIO
