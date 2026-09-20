@@ -2666,16 +2666,20 @@ function setupDiagnosticForm() {
                 );
 
 
-            const segmentInput =
-                document.getElementById(
-                    "segment"
-                );
+          const segmentInput =
+    document.getElementById(
+        "segment"
+    );
 
+const customSegmentInput =
+    document.getElementById(
+        "customSegment"
+    );
 
-            const phoneInput =
-                document.getElementById(
-                    "phone"
-                );
+const phoneInput =
+    document.getElementById(
+        "phone"
+    );
 
 
             const region =
@@ -2693,10 +2697,28 @@ function setupDiagnosticForm() {
 
 
             const segment =
-                segmentInput
-                    ?.value
-                    .trim() ||
-                "";
+    segmentInput
+        ?.value
+        .trim() ||
+    "";
+
+const customSegment =
+    customSegmentInput
+        ?.value
+        .trim() ||
+    "";
+
+const segmentName =
+    segment === "outro"
+        ? customSegment
+        : (
+            segmentInput
+                ?.options[
+                    segmentInput.selectedIndex
+                ]
+                ?.text ||
+            ""
+        ).trim();
 
 
             const phone =
@@ -2795,6 +2817,21 @@ function setupDiagnosticForm() {
 
             }
 
+           if (
+    segment === "outro" &&
+    !customSegment
+) {
+
+    showError(
+        customSegmentInput,
+        "Digite qual é o seu segmento."
+    );
+
+    valid =
+        false;
+
+}
+
 
             /*
                 WHATSAPP
@@ -2833,15 +2870,17 @@ function setupDiagnosticForm() {
 
             redirectToRadar({
 
-                region,
+    region,
 
-                company,
+    company,
 
-                segment,
+    segment,
 
-                phone
+    segmentName,
 
-            });
+    phone
+
+});
 
         }
     );
@@ -2860,6 +2899,8 @@ function redirectToRadar({
     company,
 
     segment,
+
+    segmentName,
 
     phone
 
@@ -2886,6 +2927,10 @@ function redirectToRadar({
         segment
     );
 
+destination.searchParams.set(
+    "segmento_nome",
+    segmentName
+);
 
     destination.searchParams.set(
         "regiao",
@@ -3027,6 +3072,9 @@ function redirectToRadar({
 
                 segmento:
                     segment,
+
+               segmentoNome:
+    segmentName,
 
                 telefone:
                     phone,
